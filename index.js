@@ -9,6 +9,7 @@ const multer = require('multer');
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow
 let status = '';
+let doc;
 
 app.set('view engine', 'ejs')
 app.post('/', upload.single("doc"), (req, res) => {
@@ -22,7 +23,7 @@ app.post('/', upload.single("doc"), (req, res) => {
       console.log(`File uploaded: ${file.originalname}`);
       fs.unlink(file.path, (err) => {
         if (err) throw err;
-        status = 'File uploaded sucessfully';
+        status = `PDF Loaded: ${file.orignalname}`;
         res.render('index', {status: status});
       });
     });
