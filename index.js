@@ -20,13 +20,13 @@ app.post('/', upload.single("doc"), (req, res) => {
       if (err) throw err;
       //res.send('File uploaded sucessfully');
       console.log(`File uploaded: ${file.originalname}`);
-      status = 'File uploaded sucessfully';
       fs.unlink(file.path, (err) => {
         if (err) throw err;
+        status = 'File uploaded sucessfully';
+        res.render('index', {status: status});
       });
     });
   });
-  res.render('index', {status: status});
 });
 
 app.get('/', (req, res) => {
