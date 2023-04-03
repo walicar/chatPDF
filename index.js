@@ -1,15 +1,18 @@
-const express = require('express');
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import fs from 'fs';
+import multer from 'multer';
+
 const app = express();
-const http = require('http');
 const server = http.createServer(app);
-const { Server } = require('socket.io');
 const io = new Server(server);
-const fs = require('fs');
-const multer = require('multer');
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow
 let status = '';
 let doc;
+// idk
+import { getTexts } from './util.js'
 
 app.set('view engine', 'ejs')
 app.post('/', upload.single("doc"), (req, res) => {
@@ -31,6 +34,7 @@ app.post('/', upload.single("doc"), (req, res) => {
 });
 
 app.get('/', (req, res) => {
+  doc = getTexts("")
   res.render('index', {status: status})
 });
 
