@@ -1,9 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from 'langchain/document_loaders';
-// import { PineconeStore } from 'langchain/vectorstores';
-// import { PineconeClient } from '@pinecone-database/pinecone';
-// import dotenv from 'dotenv';
-// dotenv.config();
+import { PineconeStore } from 'langchain/vectorstores';
+try { 
+  import { PineconeClient } from "@pinecone-database/pinecone";
+} catch (e) {console.log(e)}
 
 
 export async function getTexts(path) {
