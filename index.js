@@ -29,7 +29,7 @@ app.post('/', upload.single("doc"), async (req, res) => {
         try {  
           texts = await getTexts(`./uploads/${file.originalname}`)
         } catch (e) {console.log(e)}
-        console.log(texts.length)
+        console.log(`File processed, text length: ${texts.length}`)
         res.render('index', {status: status});
       });
     });
