@@ -3,30 +3,33 @@ import http from 'http';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import multer from 'multer';
-
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow
 let status = '';
-let doc;
+let texts;
 // idk
 import { getTexts } from './util.js'
 
 app.set('view engine', 'ejs')
-app.post('/', upload.single("doc"), (req, res) => {
+app.post('/', upload.single("doc"), async (req, res) => {
   const file = req.file; 
   status = 'Error Occured'
-  fs.readFile(file.path, (err, data) => {
+  fs.readFile(file.path, async (err, data) => {
     if (err) throw err;
-    fs.writeFile(`uploads/${file.originalname}`, data, (err) => {
+    fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
       if (err) throw err;
       //res.send('File uploaded sucessfully');
       console.log(`File uploaded: ${file.originalname}`);
-      fs.unlink(file.path, (err) => {
+      fs.unlink(file.path, async (err) => {
         if (err) throw err;
         status = `PDF Loaded: ${file.orignalname}`;
+        try {  
+          texts = await getTexts(`./uploads/${file.originalname}`)
+        } catch (e) {console.log(e)}
+        console.log(texts.length)
         res.render('index', {status: status});
       });
     });
@@ -34,7 +37,7 @@ app.post('/', upload.single("doc"), (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  doc = getTexts("")
+  texts = "";
   res.render('index', {status: status})
 });
 

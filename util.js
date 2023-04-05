@@ -3,10 +3,7 @@ dotenv.config();
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from 'langchain/document_loaders';
 import { PineconeStore } from 'langchain/vectorstores';
-try { 
-  import { PineconeClient } from "@pinecone-database/pinecone";
-} catch (e) {console.log(e)}
-
+import { PineconeClient } from "@pinecone-database/pinecone";
 
 export async function getTexts(path) {
   console.log(path);
@@ -17,6 +14,7 @@ export async function getTexts(path) {
   const docs = await splitter.splitDocuments(doc);
   return docs.map(d => d.pageContent);
 }
+
 /*
 export async function createEmbeddings(texts, indexName) {
   // use indexName for custom thigns
