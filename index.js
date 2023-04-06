@@ -10,6 +10,7 @@ const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
 let status = '';
 let currentFile = ''; // will always contain path of current file
+let error = '';
 // idk
 import { getTexts, createEmbeddings } from './util.js'
 // globals to be used by server only
@@ -34,7 +35,6 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
           console.log(`File processed, text length: ${texts.length}`)
         } catch (e) {console.log(e)}
         res.redirect('/')
-        //res.render('index', {status: status, currentFile: currentFile});
       });
     });
   });
@@ -42,13 +42,16 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
 
 app.post('/embeddingscreate', (req, res) => {
   // could use node.js path module to make this pretty
-  console.log('trying to create embeddings')
+  if (texts) {
+    console.log('trying to create embeddings')
+  } else {
+    error = 'No texts found, please upload a PDF document first.'
+  }
   res.redirect('/')
-  //res.render('index', {status: status, currentFile: currentFile});
 })
 
 app.get('/', (req, res) => {
-  res.render('index', {status: status, currentFile: currentFile})
+  res.render('index', {status: status, currentFile: currentFile, error: error})
 });
 
 /*
