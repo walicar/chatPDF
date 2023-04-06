@@ -36,3 +36,19 @@ export async function createEmbeddings(texts, indexName) {
   return vectorStore;
 }
 
+export async function mockPromisePass() {
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('mockPromise resolved in 1s');
+    }, 1000)
+  });
+  return promise;
+}
+export async function mockPromiseFail() {
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject('mockPromise resolved in 1s');
+    }, 1000)
+  });
+  return promise;
+}

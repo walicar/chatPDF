@@ -12,7 +12,7 @@ let status = '';
 let currentFile = ''; // will always contain path of current file
 let error = '';
 // idk
-import { getTexts, createEmbeddings } from './util.js'
+import { getTexts, createEmbeddings , mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
 let texts = '';
 
@@ -20,8 +20,8 @@ let texts = '';
 app.set('view engine', 'ejs')
 app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   const file = req.file; 
-  status = 'Error Occured'
-  fs.readFile(file.path, async (err, data) => {
+  try {
+    fs.readFile(file.path, async (err, data) => {
     if (err) throw err;
     fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
       if (err) throw err;
@@ -31,19 +31,30 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
         currentFile = `./uploads/${file.originalname}`;
         try {  
           texts = await getTexts(`./uploads/${file.originalname}`)
-          status = `PDF Loaded Successfully`;
+          status += `PDF Loaded Successfully\n`;
           console.log(`File processed, text length: ${texts.length}`)
         } catch (e) {console.log(e)}
         res.redirect('/')
       });
     });
   });
+  } catch (e) {
+    console.log(e)
+    error = 'Could not upload PDF'
+  }
 });
 
-app.post('/embeddingscreate', (req, res) => {
+app.post('/embeddingscreate', async (req, res) => {
   // could use node.js path module to make this pretty
   if (texts) {
     console.log('trying to create embeddings')
+    try {
+      const result = await mockPromiseFail();
+      console.log(result);
+    } catch (e) {
+      error = e;
+      console.log(e)
+    }
   } else {
     error = 'No texts found, please upload a PDF document first.'
   }
