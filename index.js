@@ -13,11 +13,11 @@ let currentFile = ''; // will always contain path of current file
 // idk
 import { getTexts, createEmbeddings } from './util.js'
 // globals to be used by server only
-let texts;
+let texts = '';
 
 
 app.set('view engine', 'ejs')
-app.post('/', upload.single("doc"), async (req, res) => {
+app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   const file = req.file; 
   status = 'Error Occured'
   fs.readFile(file.path, async (err, data) => {
@@ -33,20 +33,21 @@ app.post('/', upload.single("doc"), async (req, res) => {
           status = `PDF Loaded Successfully`;
           console.log(`File processed, text length: ${texts.length}`)
         } catch (e) {console.log(e)}
-        res.render('index', {status: status, currentFile: currentFile});
+        res.redirect('/')
+        //res.render('index', {status: status, currentFile: currentFile});
       });
     });
   });
 });
 
-app.post('/embeddingscreate', async (req, res) => {
+app.post('/embeddingscreate', (req, res) => {
   // could use node.js path module to make this pretty
-  // Im thinking that we use path.basename
-  status = currentFile ? currentFile : 'None';
+  console.log('trying to create embeddings')
+  res.redirect('/')
+  //res.render('index', {status: status, currentFile: currentFile});
 })
 
 app.get('/', (req, res) => {
-  texts = "";
   res.render('index', {status: status, currentFile: currentFile})
 });
 

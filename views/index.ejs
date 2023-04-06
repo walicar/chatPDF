@@ -2,14 +2,13 @@
 <% if (currentFile.length > 0) {%>
   <p> Current File: <%= currentFile %> </p>
 <% } %>
-<form action="/" method="POST" enctype="multipart/form-data">
+<form action="/pdfupload" method="POST" enctype="multipart/form-data">
   <input type="file" name="doc" required>
   <button type="submit">Upload PDF</button>
     <% if (status.length > 0) { %>
     <p> <%= status %> </p>
     <% } %>
 </form>
-<form action="/" method="POST">
-<form action="/" method="POST">
+<form action="/embeddingscreate" method="POST">
   <button type="submit">Create Embeddings</button>
 </form>
