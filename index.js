@@ -10,6 +10,7 @@ const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow
 let status = '';
 let texts;
+let currentFile = ''; // will always contain path of current file
 // idk
 import { getTexts } from './util.js'
 
@@ -21,24 +22,30 @@ app.post('/', upload.single("doc"), async (req, res) => {
     if (err) throw err;
     fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
       if (err) throw err;
-      //res.send('File uploaded sucessfully');
       console.log(`File uploaded: ${file.originalname}`);
       fs.unlink(file.path, async (err) => {
         if (err) throw err;
-        status = `PDF Loaded: ${file.orignalname}`;
+        currentFile = `./uploads/${file.originalname}`;
         try {  
           texts = await getTexts(`./uploads/${file.originalname}`)
+          status = `PDF Loaded Successfully`;
+          console.log(`File processed, text length: ${texts.length}`)
         } catch (e) {console.log(e)}
-        console.log(`File processed, text length: ${texts.length}`)
-        res.render('index', {status: status});
+        res.render('index', {status: status, currentFile: currentFile});
       });
     });
   });
 });
 
+app.post('/embeddingscreate', async (req, res) => {
+  // could use node.js path module to make this pretty
+  // Im thinking that we use path.basename
+  status = currentFile ? currentFile : 'None';
+})
+
 app.get('/', (req, res) => {
   texts = "";
-  res.render('index', {status: status})
+  res.render('index', {status: status, currentFile: currentFile})
 });
 
 io.on('connection', (socket) => {
