@@ -15,9 +15,8 @@ export async function getTexts(path) {
   return docs.map(d => d.pageContent);
 }
 
-/*
 export async function createEmbeddings(texts, indexName) {
-  // use indexName for custom thigns
+  // use indexName for custom things
   const fields = {openAIApiKey: process.env.OPENAI_API_KEY};
   const embeddings = new OpenAIEmbeddings(fields);
   const pineconeClient = new PineconeClient();
@@ -36,4 +35,4 @@ export async function createEmbeddings(texts, indexName) {
   }
   return vectorStore;
 }
-*/
+
