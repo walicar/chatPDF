@@ -7,12 +7,14 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
-// store me somewhere else, export me yknow
+// store me somewhere else, export me yknow, put me into an object
 let status = '';
-let texts;
 let currentFile = ''; // will always contain path of current file
 // idk
-import { getTexts } from './util.js'
+import { getTexts, createEmbeddings } from './util.js'
+// globals to be used by server only
+let texts;
+
 
 app.set('view engine', 'ejs')
 app.post('/', upload.single("doc"), async (req, res) => {
@@ -48,10 +50,11 @@ app.get('/', (req, res) => {
   res.render('index', {status: status, currentFile: currentFile})
 });
 
+/*
 io.on('connection', (socket) => {
   console.log('a user has connected');
 })
-
+*/
 server.listen(3000, () => {
   console.log('listening on http://localhost:3000/');
 });
