@@ -5,7 +5,8 @@ import { PDFLoader } from 'langchain/document_loaders';
 import { PineconeStore } from 'langchain/vectorstores';
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from 'langchain/embeddings'
-
+import { OpenAI } from 'langchain';
+import { loadQAStuffChain } from 'langchain/dist/chains';
 export async function getTexts(path) {
   console.log(path);
   console.log(typeof path);
@@ -34,7 +35,18 @@ export async function createEmbeddings(texts, indexName) {
   } catch (e) {
     console.log(e);
   }
+  vectorStore.similaritySearch(query)
   return vectorStore;
+}
+
+export async function queryDoc(query, vectorStore) {
+  try {
+    const docs = await vectorStore.similartiySearch(query);
+    const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0.5})
+    const chain = loadQAStuffChain(llm);
+    const answer = await chain.run({input_documents: docs, question: query})
+    return answer;
+  } catch(e) {console.log(e)}
 }
 
 export async function mockPromisePass() {
