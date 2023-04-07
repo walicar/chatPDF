@@ -8,14 +8,15 @@ const server = http.createServer(app);
 const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
-let status = '';
-let currentFile = ''; // will always contain path of current file
-let error = '';
+let state = {
+  status: '',
+  currentFile: '', // will always contain path of current file
+  error: ''
+}
 // idk
 import { getTexts, createEmbeddings , mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
 let texts = '';
-
 
 app.set('view engine', 'ejs')
 app.post('/pdfupload', upload.single("doc"), async (req, res) => {
@@ -28,10 +29,10 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
       console.log(`File uploaded: ${file.originalname}`);
       fs.unlink(file.path, async (err) => {
         if (err) throw err;
-        currentFile = `./uploads/${file.originalname}`;
+        state.currentFile = `./uploads/${file.originalname}`;
         try {  
           texts = await getTexts(`./uploads/${file.originalname}`)
-          status += `PDF Loaded Successfully\n`;
+          state.status = `PDF Loaded Successfully`;
           console.log(`File processed, text length: ${texts.length}`)
         } catch (e) {console.log(e)}
         res.redirect('/')
@@ -40,7 +41,7 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   });
   } catch (e) {
     console.log(e)
-    error = 'Could not upload PDF'
+    state.error = 'Could not upload PDF'
   }
 });
 
@@ -49,21 +50,22 @@ app.post('/embeddingscreate', async (req, res) => {
   if (texts) {
     console.log('trying to create embeddings')
     try {
-      await createEmbeddings(texts, 'cpdf1');
-      // const result = await mockPromisePass();
+      // await createEmbeddings(texts, 'cpdf1');
+      await mockPromisePass();
       console.log('Embeddings Fulfilled');
+      state.status = 'Created embeddings!';
     } catch (e) {
-      error = e;
+      state.error = e;
       console.log(e);
     }
   } else {
-    error = 'No texts found, please upload a PDF document first.';
+    state.error = 'No texts found, please upload a PDF document first.';
   }
   res.redirect('/')
 })
 
 app.get('/', (req, res) => {
-  res.render('index', {status: status, currentFile: currentFile, error: error})
+  res.render('index', state)
 });
 
 /*

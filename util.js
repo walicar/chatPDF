@@ -45,6 +45,7 @@ export async function mockPromisePass() {
   });
   return promise;
 }
+
 export async function mockPromiseFail() {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
