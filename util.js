@@ -4,6 +4,7 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from 'langchain/document_loaders';
 import { PineconeStore } from 'langchain/vectorstores';
 import { PineconeClient } from "@pinecone-database/pinecone";
+import { OpenAIEmbeddings } from 'langchain/embeddings'
 
 export async function getTexts(path) {
   console.log(path);
@@ -21,10 +22,10 @@ export async function createEmbeddings(texts, indexName) {
   const embeddings = new OpenAIEmbeddings(fields);
   const pineconeClient = new PineconeClient();
   await pineconeClient.init({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_API_ENV
   });
-  const index = pineconeClient.Index('cpdf1');
+  const index = pineconeClient.Index(indexName);
   const metadatas = [{}];
   const dbConfig = {pineconeIndex: index};
   let vectorStore;

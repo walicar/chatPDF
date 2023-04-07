@@ -49,14 +49,15 @@ app.post('/embeddingscreate', async (req, res) => {
   if (texts) {
     console.log('trying to create embeddings')
     try {
-      const result = await mockPromiseFail();
-      console.log(result);
+      await createEmbeddings(texts, 'cpdf1');
+      // const result = await mockPromisePass();
+      console.log('Embeddings Fulfilled');
     } catch (e) {
       error = e;
-      console.log(e)
+      console.log(e);
     }
   } else {
-    error = 'No texts found, please upload a PDF document first.'
+    error = 'No texts found, please upload a PDF document first.';
   }
   res.redirect('/')
 })
