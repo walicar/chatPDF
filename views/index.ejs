@@ -22,3 +22,7 @@
   </textarea>
   <button type="submit">Query</button>
 </form>
+
+<% if (response.length > 0) {%>
+  <p style="color:green;"> <%= response %> </p>
+<% } %>

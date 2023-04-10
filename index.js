@@ -12,12 +12,13 @@ const upload = multer({ dest: "uploads/" });
 let state = {
   status: '',
   currentFile: '', // will always contain path of current file
-  error: ''
+  error: '',
+  response: ''
 }
 // idk
 import { getTexts, createEmbeddings , mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
-let index = false;
+let index = true;
 let texts = '';
 
 app.set('view engine', 'ejs')
@@ -54,10 +55,11 @@ app.post('/embeddingscreate', async (req, res) => {
   if (texts) {
     console.log('trying to create embeddings')
     try {
-      // await createEmbeddings(texts, 'cpdf1');
+      // createEmbeddings(texts, 'cpdf1');
       await mockPromisePass();
       console.log('Embeddings Fulfilled');
       state.status = 'Created embeddings!';
+      index = true;
     } catch (e) {
       state.error = e;
       console.log(e);
@@ -68,15 +70,15 @@ app.post('/embeddingscreate', async (req, res) => {
 
 app.post('/query', async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
-  if (index) {
+  if (index && req.body.query) {
     try {
-      await mockPromisePass();
+      state.response = await mockPromisePass();
       console.log('Query Fulfilled');
     } catch (e) {
       state.error = e;
       console.log(e);
     }
-  } else { state.error = 'No index found, please connect to an index first'; }
+  } else { state.error = 'Error sending query'; }
   res.redirect('/');
 })
 
