@@ -3,6 +3,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import multer from 'multer';
+import bodyParser from 'body-parser';
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -16,9 +17,12 @@ let state = {
 // idk
 import { getTexts, createEmbeddings , mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
+let index = false;
 let texts = '';
 
 app.set('view engine', 'ejs')
+app.use(bodyParser.urlencoded({ extended: true}));
+
 app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   const file = req.file; 
   try {
@@ -58,10 +62,22 @@ app.post('/embeddingscreate', async (req, res) => {
       state.error = e;
       console.log(e);
     }
-  } else {
-    state.error = 'No texts found, please upload a PDF document first.';
-  }
+  } else { state.error = 'No texts found, please upload a PDF document first.'; }
   res.redirect('/')
+})
+
+app.post('/query', async (req, res) => {
+  console.log(`Query to be sent: ${req.body.query}`);
+  if (index) {
+    try {
+      await mockPromisePass();
+      console.log('Query Fulfilled');
+    } catch (e) {
+      state.error = e;
+      console.log(e);
+    }
+  } else { state.error = 'No index found, please connect to an index first'; }
+  res.redirect('/');
 })
 
 app.get('/', (req, res) => {

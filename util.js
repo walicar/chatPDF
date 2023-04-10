@@ -8,6 +8,8 @@ import { OpenAIEmbeddings } from 'langchain/embeddings'
 import { OpenAI } from 'langchain';
 import { loadQAChain } from 'langchain/chains';
 
+// pinecone dimensions 1536
+
 export async function getTexts(path) {
   console.log(path);
   console.log(typeof path);
