@@ -15,10 +15,11 @@ let state = {
   error: '',
   response: '',
   index: '',
-  indices: []
+  indices: [],
+  vectorStore: ''
 }
 // idk
-import { getTexts, createEmbeddings, getIndices, mockPromisePass, mockPromiseFail} from './util.js'
+import { getTexts, createEmbeddings, queryDoc, getIndices, mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
 let texts = '';
 
@@ -51,16 +52,14 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   }
 });
 
-app.post('/embeddingscreate', async (req, res) => {
-  // could use node.js path module to make this pretty
+app.post('/makeEmbeddings', async (req, res) => {
   if (texts && state.index) {
     console.log('trying to create embeddings')
     try {
-      // createEmbeddings(texts, 'cpdf1'); // TODO: hardcoded index name
+      // state.vectorStore = createEmbeddings(texts, state.index); 
       await mockPromisePass();
-      console.log('Embeddings Fulfilled');
+      console.log('Embeddings Fulfilled, vectorStore set.');
       state.status = 'Created embeddings!';
-      state.index = 'cpdf1'; // TODO: hardcoded index name
     } catch (e) {
       state.error = e;
       console.log(e);
@@ -71,8 +70,9 @@ app.post('/embeddingscreate', async (req, res) => {
 
 app.post('/query', async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
-  if (state.index && req.body.query) {
+  if (state.vectorStore && req.body.query) {
     try {
+      // state.response = await queryDoc(query, state.vectorStore)
       state.response = await mockPromisePass();
       console.log('Query Fulfilled');
     } catch (e) {
@@ -110,6 +110,7 @@ io.on('connection', (socket) => {
   console.log('a user has connected');
 })
 */
+
 server.listen(3000, () => {
   console.log('listening on http://localhost:3000/');
 });

@@ -38,7 +38,6 @@ export async function createEmbeddings(texts, indexName) {
   } catch (e) {
     console.log(e);
   }
-  vectorStore.similaritySearch(query)
   return vectorStore;
 }
 
