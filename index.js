@@ -13,12 +13,13 @@ let state = {
   status: '',
   currentFile: '', // will always contain path of current file
   error: '',
-  response: ''
+  response: '',
+  index: '',
+  indices: []
 }
 // idk
-import { getTexts, createEmbeddings , mockPromisePass, mockPromiseFail} from './util.js'
+import { getTexts, createEmbeddings, getIndices, mockPromisePass, mockPromiseFail} from './util.js'
 // globals to be used by server only
-let index = true;
 let texts = '';
 
 app.set('view engine', 'ejs')
@@ -52,25 +53,25 @@ app.post('/pdfupload', upload.single("doc"), async (req, res) => {
 
 app.post('/embeddingscreate', async (req, res) => {
   // could use node.js path module to make this pretty
-  if (texts) {
+  if (texts && state.index) {
     console.log('trying to create embeddings')
     try {
-      // createEmbeddings(texts, 'cpdf1');
+      // createEmbeddings(texts, 'cpdf1'); // TODO: hardcoded index name
       await mockPromisePass();
       console.log('Embeddings Fulfilled');
       state.status = 'Created embeddings!';
-      index = true;
+      state.index = 'cpdf1'; // TODO: hardcoded index name
     } catch (e) {
       state.error = e;
       console.log(e);
     }
-  } else { state.error = 'No texts found, please upload a PDF document first.'; }
+  } else { state.error = 'no texts or no selected index.'; }
   res.redirect('/')
 })
 
 app.post('/query', async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
-  if (index && req.body.query) {
+  if (state.index && req.body.query) {
     try {
       state.response = await mockPromisePass();
       console.log('Query Fulfilled');
@@ -79,6 +80,24 @@ app.post('/query', async (req, res) => {
       console.log(e);
     }
   } else { state.error = 'Error sending query'; }
+  res.redirect('/');
+})
+
+app.post('/getIndices', async (req, res) => {
+  console.log('Attempting to get indices')
+  try {
+    state.indices = await getIndices();
+    console.log(state.indices);
+  } catch (e) { 
+    console.log(e) 
+    state.error = e;
+  }
+  res.redirect('/');
+})
+
+app.post('/setIndex', (req, res) => {
+  state.index = req.body.index;
+  console.log(`Just set state.index to: ${req.body.index}`)
   res.redirect('/');
 })
 

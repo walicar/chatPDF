@@ -52,6 +52,18 @@ export async function queryDoc(query, vectorStore) {
   } catch(e) {console.log(e)}
 }
 
+export async function getIndices() {
+  const pineconeClient = new PineconeClient();
+  try {
+    await pineconeClient.init({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_API_ENV
+    });
+    const list = await pineconeClient.listIndexes();
+    return list;
+  } catch (e) {console.log(e)}
+}
+
 export async function mockPromisePass() {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
