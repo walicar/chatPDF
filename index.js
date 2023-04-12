@@ -19,7 +19,7 @@ let state = {
   vectorStore: ''
 }
 // idk
-import { getTexts, createEmbeddings, queryDoc, getIndices, mockPromisePass, mockPromiseFail} from './util.js'
+import { getTexts, createEmbeddings, queryDoc, getIndices, getPineconeStore, mockPromiseFail} from './util.js'
 // globals to be used by server only
 let texts = '';
 
@@ -95,9 +95,11 @@ app.post('/getIndices', async (req, res) => {
   res.redirect('/');
 })
 
-app.post('/setIndex', (req, res) => {
+app.post('/setIndex', async (req, res) => {
   state.index = req.body.index;
-  console.log(`Just set state.index to: ${req.body.index}`)
+  state.vectorStore = await getPineconeStore(state.index);
+  console.log(`state.index set to: ${req.body.index}, state.vectorStore is set`)
+  console.log(state.vectorStore);
   res.redirect('/');
 })
 

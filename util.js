@@ -63,6 +63,24 @@ export async function getIndices() {
   } catch (e) {console.log(e)}
 }
 
+export async function getPineconeStore(indexName) {
+  const fields = {openAIApiKey: process.env.OPENAI_API_KEY};
+  const embeddings = new OpenAIEmbeddings(fields);
+  const pineconeClient = new PineconeClient();
+  try {
+    await pineconeClient.init({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_API_ENV
+    });
+  } catch(e) {console.log(e)};
+
+  const index = pineconeClient.Index(indexName);
+  const dbConfig = {pineconeIndex: index};
+  const pineconeStore = new PineconeStore(embeddings, dbConfig)
+
+  return pineconeStore;
+}
+
 export async function mockPromisePass() {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
