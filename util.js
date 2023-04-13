@@ -6,7 +6,7 @@ import { PineconeStore } from 'langchain/vectorstores';
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from 'langchain/embeddings'
 import { OpenAI } from 'langchain';
-import { loadQAChain } from 'langchain/chains';
+import { loadQAStuffChain } from 'langchain/chains';
 
 // pinecone dimensions 1536
 
@@ -32,22 +32,24 @@ export async function createEmbeddings(texts, indexName) {
   const index = pineconeClient.Index(indexName);
   const metadatas = [{}];
   const dbConfig = {pineconeIndex: index};
-  let vectorStore;
   try {
-    vectorStore = await PineconeStore.fromTexts(texts, metadatas, embeddings, dbConfig);
+    const vectorStore = await PineconeStore.fromTexts(texts, metadatas, embeddings, dbConfig);
+    return vectorStore;
   } catch (e) {
     console.log(e);
   }
-  return vectorStore;
 }
 
 export async function queryDoc(query, vectorStore) {
+  console.log('inside querydoc');
   try {
-    const docs = await vectorStore.similartiySearch(query);
+    const docs = await vectorStore.similaritySearch(query);
     const llm = new OpenAI({ openAIApiKey: process.env.OPENAI_API_KEY, temperature: 0.5})
-    const chain = loadQAChain(llm, { chainType: 'stuff'});
-    const answer = await chain.run({input_documents: docs, question: query})
-    return answer;
+    const chain = loadQAStuffChain(llm);
+    const answer = await chain.call({input_documents: docs, question: query})
+    console.log(answer);
+    // might need to return {answer }k
+    return answer.text;
   } catch(e) {console.log(e)}
 }
 
@@ -73,11 +75,9 @@ export async function getPineconeStore(indexName) {
       environment: process.env.PINECONE_API_ENV
     });
   } catch(e) {console.log(e)};
-
   const index = pineconeClient.Index(indexName);
   const dbConfig = {pineconeIndex: index};
-  const pineconeStore = new PineconeStore(embeddings, dbConfig)
-
+  const pineconeStore = await PineconeStore.fromExistingIndex(embeddings, dbConfig);
   return pineconeStore;
 }
 

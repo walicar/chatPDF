@@ -56,8 +56,9 @@ app.post('/makeEmbeddings', async (req, res) => {
   if (texts && state.index) {
     console.log('trying to create embeddings')
     try {
-      // state.vectorStore = createEmbeddings(texts, state.index); 
-      await mockPromisePass();
+      // DUMMY CODE
+      state.vectorStore = await createEmbeddings(texts, state.index);
+      // await mockPromisePass();
       console.log('Embeddings Fulfilled, vectorStore set.');
       state.status = 'Created embeddings!';
     } catch (e) {
@@ -72,8 +73,9 @@ app.post('/query', async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
   if (state.vectorStore && req.body.query) {
     try {
-      // state.response = await queryDoc(query, state.vectorStore)
-      state.response = await mockPromisePass();
+      // DUMMY CODE
+      state.response = await queryDoc(req.body.query, state.vectorStore)
+      // state.response = await mockPromisePass();
       console.log('Query Fulfilled');
     } catch (e) {
       state.error = e;
@@ -97,7 +99,10 @@ app.post('/getIndices', async (req, res) => {
 
 app.post('/setIndex', async (req, res) => {
   state.index = req.body.index;
+  console.log(typeof state.vectorStore)
   state.vectorStore = await getPineconeStore(state.index);
+  console.log(typeof state.vectorStore)
+  console.log(state.vectorStore);
   console.log(`state.index set to: ${req.body.index}, state.vectorStore is set`)
   const desc = await checkIndex({ indexName: state.index });
   console.log(desc);
