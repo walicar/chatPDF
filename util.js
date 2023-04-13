@@ -81,6 +81,18 @@ export async function getPineconeStore(indexName) {
   return pineconeStore;
 }
 
+export async function checkIndex(indexName) {
+  const pineconeClient = new PineconeClient();
+  try {
+    await pineconeClient.init({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_API_ENV
+    });
+  } catch(e) {console.log(e)};
+  const result = await pineconeClient.describeIndex(indexName)
+  return result;
+}
+
 export async function mockPromisePass() {
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
