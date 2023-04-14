@@ -117,6 +117,10 @@ app.get('/', (req, res) => {
   res.render('index', state)
 });
 
+app.get('/new', (req, res) => {
+  res.render('new');
+})
+
 /*
 io.on('connection', (socket) => {
   console.log('a user has connected');
@@ -125,4 +129,5 @@ io.on('connection', (socket) => {
 
 server.listen(3000, () => {
   console.log('listening on http://localhost:3000/');
+  console.log('visit the new page at http://localhost:3000/new')
 });
