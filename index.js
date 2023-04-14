@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import multer from 'multer';
 import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -22,9 +24,11 @@ let state = {
 import { getTexts, createEmbeddings, queryDoc, getIndices, getPineconeStore, mockPromiseFail, checkIndex, mockPromisePass} from './util.js'
 // globals to be used by server only
 let texts = '';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(express.static('public'));
 
 app.post('/pdfupload', upload.single("doc"), async (req, res) => {
   const file = req.file; 
