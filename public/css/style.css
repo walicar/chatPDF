@@ -1,0 +1,30 @@
+.container {
+  margin: 0% auto;
+  height: 95vh;
+  display: grid;
+  grid-template-areas:
+  "top-bar top-bar top-bar"
+  "chat-box chat-box chat-box"
+  "query-box query-box query-box";
+  grid-template-rows: 500px 400px 500px;
+  grid-template-columns: 275px;
+}
+
+.top-bar {
+  grid-area: top-bar;
+}
+
+.top-bar form {
+  display: inline-block;
+}
+
+.chat-box {
+  grid-area: chat-box;
+  overflow: scroll;
+}
+
+.query_box {
+  grid-area: query-box;
+}
+
+
