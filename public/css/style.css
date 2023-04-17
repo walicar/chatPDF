@@ -1,30 +1,65 @@
+:root {
+  font-size: 18px;
+}
+
+input, form, label {
+  font-size: 18px;
+}
+
+button, select {
+  font-size: 15px;
+}
 .container {
   margin: 0% auto;
   height: 95vh;
+  width: 80%;
   display: grid;
   grid-template-areas:
   "top-bar top-bar top-bar"
   "chat-box chat-box chat-box"
   "query-box query-box query-box";
-  grid-template-rows: 500px 400px 500px;
-  grid-template-columns: 275px;
+  grid-template-rows: 48px 200px 100px;
 }
 
 .top-bar {
+  border: green;
+  border-style: solid;
   grid-area: top-bar;
+  position: relative;
 }
 
-.top-bar form {
-  display: inline-block;
+.logo {
+  display: inline;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.doc-bar {
+  border: aqua;
+  border-style: solid;
+  display: inline;
+  height: 25px;
+  position: absolute;
+  bottom:0;
+  right:0;
+}
+
+.doc-bar form {
+  display: inline;
 }
 
 .chat-box {
+  border: blue;
+  border-style: solid;
   grid-area: chat-box;
   overflow: scroll;
 }
 
-.query_box {
+.query-box {
+  border: red;
+  border-style: solid;
   grid-area: query-box;
+  display: inline-block;
 }
 
 

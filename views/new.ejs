@@ -2,25 +2,27 @@
 <html lang="en" data-theme="light">
   <head>
     <title>chatPDF new</title>
-    <link rel="stylesheet" type="text/css" href="/css/pico.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/css/pico.min.css"> -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
   </head>
   <body>
     <main class="container main-page"> 
       <div class="top-bar"> 
-        <h1>chatPDF</h1>
-        <form action="/setIndex" method="POST">
-          <label for="index">Index: </label>
-          <select name="index">
-            <option value="test1">test1</option>
-            <option value="test2">test2</option>
-            <option value="test3">test3</option>
-          </select>
-        </form>
-        <form action="/goUpload" method="GET">
-          <button>Upload New Document</button>
-          <p aria-busy="true"></p>
-        </form>
+        <div class="logo">chatPDF</div>
+        <div class="doc-bar">
+          <form action="/setIndex" method="POST">
+            <label for="index">Index: </label>
+            <select name="index">
+              <option value="test1">test1</option>
+              <option value="test2">test2</option>
+              <option value="test3">test3</option>
+            </select>
+          </form>
+          <form action="/goUpload" method="GET">
+            <button>Upload New Document</button>
+            <p aria-busy="true"></p>
+          </form>
+        </div>
       </div>
       <div class="chat-box"> 
         <p class="answer">This is an answer: answer</p>
@@ -28,8 +30,8 @@
       </div>
       <div class="query-box"> 
         <form action="/query" method="POST">
-          <textarea name="query" rows="4" cols="30">
-          </textarea>
+          <input type="text" name="query" autocomplete="off">
+          </input>
           <button type="submit">Query</button>
         </form>
       </div>
