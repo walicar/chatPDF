@@ -59,7 +59,16 @@ button, select {
   border: red;
   border-style: solid;
   grid-area: query-box;
-  display: inline-block;
 }
 
+.query-box form {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height:80px
+}
 
+#query-input {
+  flex-grow: 4;
+  resize: none;
+}
