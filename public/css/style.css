@@ -14,16 +14,19 @@ button, select {
   height: 95vh;
   width: 80%;
   display: grid;
+  /*padding: 0px 10px;*/
   grid-template-areas:
   "top-bar top-bar top-bar"
   "chat-box chat-box chat-box"
   "query-box query-box query-box";
-  grid-template-rows: 45px 1fr 100px;
+  grid-template-rows: 46px 1fr 110px;
+  border: 2px black solid;
+  border-radius: 5px;
 }
 
 .top-bar {
-  border: green;
-  border-style: solid;
+  border-bottom: 2px solid black;
+  padding: 0px 0px 0px 10px;
   grid-area: top-bar;
   position: relative;
 }
@@ -32,16 +35,18 @@ button, select {
   display: inline;
   font-size: 2.5em;
   font-weight: bold;
+  padding-right: 45vw;
+  border-right: 2px solid black;
 }
 
 .doc-bar {
-  border: aqua;
-  border-style: solid;
   display: inline;
-  height: 25px;
+  height: 26px;
   position: absolute;
   bottom:0;
   right:0;
+  padding-right:10px;
+  padding-bottom:8px;
 }
 
 .doc-bar form {
@@ -49,26 +54,38 @@ button, select {
 }
 
 .chat-box {
+  /*
   border: blue;
   border-style: solid;
+  */
+  padding: 0px 10px;
   grid-area: chat-box;
   overflow: scroll;
 }
 
 .query-box {
-  border: red;
-  border-style: solid;
+  border-top: 2px black solid;
+  padding-top: 10px;
   grid-area: query-box;
 }
 
 .query-box form {
+  padding: 0px 10px;
   display: flex;
+  gap:10px;
   flex-direction: row;
-  align-items: stretch;
   height:90px
 }
 
 #query-input {
   flex-grow: 4;
   resize: none;
+}
+
+.user-color {
+  color: blue;
+}
+
+.chat-color {
+  color: red;
 }
