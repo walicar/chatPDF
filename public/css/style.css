@@ -37,7 +37,7 @@ button, select {
   padding-right: 10px;
 }
 
-.top-bar > form {
+.top-bar > .top-bar-item {
   padding-top: 10px;
 }
 

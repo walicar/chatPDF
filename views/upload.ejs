@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <title>chatPDF upload</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+  </head>
+  <body>
+    <main class="container main-page"> 
+      <div class="top-bar"> 
+        <div class="logo">chatPDF</div>
+        <form class="top-bar-item" action="/setIndex" method="POST">
+          <label for="index">Index: </label>
+          <select name="index">
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <option value="test3">test3</option>
+          </select>
+        </form>
+        <a class="top-bar-item" id="upload-button" href="/error"><button>Go Back</button></a>
+      </div>
+      <div class="chat-box"> 
+        <p>Put stuff here</p>
+      </div>
+    </main>
+  </body>
+</html>
+

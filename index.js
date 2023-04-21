@@ -121,6 +121,10 @@ app.get('/new', (req, res) => {
   res.render('new');
 })
 
+app.get('/upload', (req, res) => {
+  res.render('upload');
+})
+
 /*
 io.on('connection', (socket) => {
   console.log('a user has connected');
