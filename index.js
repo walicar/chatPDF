@@ -117,8 +117,8 @@ app.get('/', (req, res) => {
   res.render('index', state)
 });
 
-app.get('/new', (req, res) => {
-  res.render('new');
+app.get('/home', (req, res) => {
+  res.render('home');
 })
 
 app.get('/upload', (req, res) => {
@@ -133,5 +133,6 @@ io.on('connection', (socket) => {
 
 server.listen(3000, () => {
   console.log('listening on http://localhost:3000/');
-  console.log('visit the new page at http://localhost:3000/new')
+  console.log('visit the new page at http://localhost:3000/home')
+  console.log('visit the upload page at http://localhost:3000/upload')
 });
