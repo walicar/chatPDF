@@ -1,5 +1,6 @@
 :root {
   font-size: 18px;
+  --border-theme: 3px solid black;
 }
 
 input, form, label {
@@ -20,12 +21,12 @@ button, select {
   "chat-box chat-box chat-box"
   "query-box query-box query-box";
   grid-template-rows: 46px 1fr 110px;
-  border: 2px black solid;
+  border: var(--border-theme);
   border-radius: 5px;
 }
 
 .top-bar {
-  border-bottom: 2px solid black;
+  border-bottom: var(--border-theme);
   grid-area: top-bar;
   position: relative;
   display: flex;
@@ -39,7 +40,7 @@ button, select {
 
 .top-bar > .top-bar-item {
   padding-top: 10px;
-  border-left: 2px solid black;
+  border-left: var(--border-theme);
 }
 
 .logo {
@@ -60,7 +61,7 @@ button, select {
 }
 
 .query-box {
-  border-top: 2px black solid;
+  border-top: var(--border-theme);
   padding-top: 10px;
   grid-area: query-box;
 }
