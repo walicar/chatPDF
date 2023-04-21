@@ -9,20 +9,18 @@
     <main class="container main-page"> 
       <div class="top-bar"> 
         <div class="logo">chatPDF</div>
-        <div class="doc-bar">
-          <form action="/setIndex" method="POST">
-            <label for="index">Index: </label>
-            <select name="index">
-              <option value="test1">test1</option>
-              <option value="test2">test2</option>
-              <option value="test3">test3</option>
-            </select>
-          </form>
-          <form action="/goUpload" method="GET">
-            <button>Upload New Document</button>
-            <p aria-busy="true"></p>
-          </form>
-        </div>
+        <form action="/setIndex" method="POST">
+          <label for="index">Index: </label>
+          <select name="index">
+            <option value="test1">test1</option>
+            <option value="test2">test2</option>
+            <option value="test3">test3</option>
+          </select>
+        </form>
+        <form id="upload-button" action="/upload" method="GET">
+          <button>Upload New Document</button>
+          <p aria-busy="true"></p>
+        </form>
       </div>
       <div class="chat-box"> 
         <p><span class="user-color">[User] </span>answer</p>

@@ -26,34 +26,34 @@ button, select {
 
 .top-bar {
   border-bottom: 2px solid black;
-  padding: 0px 0px 0px 10px;
   grid-area: top-bar;
   position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+.top-bar > * {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.top-bar > form {
+  padding-top: 10px;
 }
 
 .logo {
   display: inline;
   font-size: 2.5em;
   font-weight: bold;
-  padding-right: 45vw;
+  flex-grow: 3;
   border-right: 2px solid black;
 }
 
-.doc-bar {
-  display: inline;
-  height: 26px;
-  position: absolute;
-  bottom:0;
-  right:0;
-  padding-right:10px;
-  padding-bottom:8px;
+#upload-button {
+  border-left: solid 2px black;
 }
 
-.doc-bar form {
-  display: inline;
-}
-
-.chat-box {
+.chat-box { 
   /*
   border: blue;
   border-style: solid;
