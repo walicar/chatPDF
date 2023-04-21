@@ -39,6 +39,7 @@ button, select {
 
 .top-bar > .top-bar-item {
   padding-top: 10px;
+  border-left: 2px solid black;
 }
 
 .logo {
@@ -46,11 +47,6 @@ button, select {
   font-size: 2.5em;
   font-weight: bold;
   flex-grow: 3;
-  border-right: 2px solid black;
-}
-
-#upload-button {
-  border-left: solid 2px black;
 }
 
 .chat-box { 
