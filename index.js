@@ -113,16 +113,16 @@ app.post('/setIndex', async (req, res) => {
   res.redirect('/');
 })
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.render('index', state)
 });
 
-app.get('/home', (req, res) => {
-  res.render('home');
+app.get('/home', (_req, res) => {
+  res.render('home', state);
 })
 
-app.get('/upload', (req, res) => {
-  res.render('upload');
+app.get('/upload', (_req, res) => {
+  res.render('upload', state);
 })
 
 /*

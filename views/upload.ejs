@@ -1,27 +1,62 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <title>chatPDF</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-  </head>
-  <body>
-    <main class="container main-page"> 
-      <div class="top-bar"> 
-        <div class="logo">chatPDF</div>
-        <a class="top-bar-item" href="/home"><button>Go Back</button></a>
-      </div>
-      <div class="chat-box"> 
-        <p>Put stuff here</p>
-        <form action="/setIndex" method="POST">
-          <label for="index">Index: </label>
-          <select name="index">
-            <option value="test1">test1</option>
-            <option value="test2">test2</option>
-            <option value="test3">test3</option>
-          </select>
-        </form>
-      </div>
-    </main>
-  </body>
-</html>
 
+<head>
+  <title>chatPDF</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+  <main class="container main-page">
+    <div class="top-bar">
+      <div class="logo">chatPDF</div>
+      <a class="top-bar-item" href="/home"><button>Go Back</button></a>
+    </div>
+    <div class="chat-box">
+      <div>
+        <% if (error.length> 0) {%>
+          <p style="color:red;">
+            <%= error %>
+          </p>
+          <% } %>
+      </div>
+      <form action="/pdfupload" method="POST" enctype="multipart/form-data">
+        <input type="file" name="doc" required>
+        <button type="submit">Upload PDF</button>
+        <% if (status.length> 0) { %>
+          <p>
+            <%= status %>
+          </p>
+          <% } %>
+      </form>
+      <div>
+        <form action="/getIndices" method="POST">
+          <button type="submit">Get Indices</button>
+        </form>
+
+        <% if (indices && indices.length> 0) { %>
+          <form action="/setIndex" method="POST">
+            <label for="index">Choose index to work use: </label>
+            <select name="index">
+              <% indices.forEach((item)=> { %>
+                <option value="<%= item %>">
+                  <%= item %>
+                </option>
+                <% }) %>
+                  <option value="none">none</option>
+            </select>
+            <button type="submit">Choose Index</button>
+          </form>
+          <% } else { %>
+            <p>No Indices detected</p>
+            <% } %>
+      </div>
+
+      <form action="/makeEmbeddings" method="POST">
+        <button type="submit">Create Embeddings</button>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>
