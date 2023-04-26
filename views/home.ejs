@@ -1,35 +1,41 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <head>
-    <title>chatPDF</title>
-    <!-- <link rel="stylesheet" type="text/css" href="/css/pico.min.css"> -->
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-  </head>
-  <body>
-    <main class="container main-page"> 
-      <div class="top-bar"> 
-        <div class="logo">chatPDF</div>
-        <form class="top-bar-item" action="/error" method="POST">
-          <label for="index">Index: </label>
-          <select onchange="this.form.submit()" name="index">
-            <option value="test1">test1</option>
-            <option value="test2">test2</option>
-            <option value="test3">test3</option>
-          </select>
-        </form>
-        <a class="top-bar-item" href="/upload"><button>Upload New Document</button></a>
-      </div>
-      <div class="chat-box"> 
-        <p><span class="user-color">[User] </span>answer</p>
-        <p><span class="chat-color">[chatPDF] </span>query </p>
-      </div>
-      <div class="query-box"> 
-        <form action="/query" method="POST">
-          <textarea id="query-input" type="text" name="query"></textarea>
-          <button type="submit">Query</button>
-        </form>
-      </div>
-    </main>
-  </body>
-</html>
 
+<head>
+  <title>chatPDF</title>
+  <!-- <link rel="stylesheet" type="text/css" href="/css/pico.min.css"> -->
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+
+<body>
+  <main class="container main-page">
+    <div class="top-bar">
+      <div class="logo">chatPDF</div>
+      <form class="top-bar-item" action="/error" method="POST">
+        <label for="index">Index: </label>
+        <select onchange="this.form.submit()" name="index">
+          <option value="test1">test1</option>
+          <option value="test2">test2</option>
+          <option value="test3">test3</option>
+        </select>
+      </form>
+      <a class="top-bar-item" href="/upload"><button>Upload New Document</button></a>
+    </div>
+    <div class="chat-box">
+      <% messages.forEach((message)=> {%>
+        <p>
+          <span class="<%= message.color %>">[<%= message.name %>] </span>
+          <%= message.content %>
+        </p>
+        <% }) %>
+    </div>
+    <div class="query-box">
+      <form action="/query" method="POST">
+        <textarea id="query-input" type="text" name="query"></textarea>
+        <button type="submit">Query</button>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>

@@ -19,6 +19,11 @@ let state = {
   index: "",
   indices: [],
   vectorStore: "",
+  messages: [{
+    color: "chat-color",
+    name: "ChatPDF",
+    content: "Welcome to chatPDF, select a document and ask me a question!",
+  }],
 };
 // idk
 import {
@@ -31,6 +36,7 @@ import {
   mockPromisePass,
   queryDoc,
 } from "./util.js";
+import { argv0 } from "process";
 // globals to be used by server only
 let texts = "";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -86,11 +92,25 @@ app.post("/makeEmbeddings", async (_req, res) => {
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
+  const queryMessage = {
+    color: "user-color",
+    name: "User",
+    content: req.body.query,
+  };
+  state.messages.push(queryMessage);
+  res.render("/home", state);
   if (state.vectorStore && req.body.query) {
     try {
       // DUMMY CODE
-      state.response = await queryDoc(req.body.query, state.vectorStore);
+      const response = await queryDoc(req.body.query, state.vectorStore);
+      state.response = response;
       // state.response = await mockPromisePass();
+      const answerMessage = {
+        color: "chat-color",
+        name: "ChatPDF",
+        content: response,
+      };
+      state.messages.push(answerMessage);
       console.log("Query Fulfilled");
     } catch (e) {
       state.error = e;
@@ -130,6 +150,13 @@ app.get("/", (_req, res) => {
 });
 
 app.get("/home", (_req, res) => {
+  const deleteMeLater = {
+    color: "user-color",
+    name: "User",
+    content: "Hey this is a test message, please delete me later",
+  };
+  state.messages.push(deleteMeLater);
+
   res.render("home", state);
 });
 
