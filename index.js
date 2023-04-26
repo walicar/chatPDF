@@ -149,14 +149,13 @@ app.get("/", (_req, res) => {
   res.render("index", state);
 });
 
-app.get("/home", (_req, res) => {
+app.get("/home", async (_req, res) => {
   const deleteMeLater = {
     color: "user-color",
     name: "User",
     content: "Hey this is a test message, please delete me later",
   };
   state.messages.push(deleteMeLater);
-
   res.render("home", state);
 });
 

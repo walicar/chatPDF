@@ -30,10 +30,6 @@
           <% } %>
       </form>
       <div>
-        <form action="/getIndices" method="POST">
-          <button type="submit">Get Indices</button>
-        </form>
-
         <% if (indices && indices.length> 0) { %>
           <form action="/setIndex" method="POST">
             <label for="index">Choose index to work use: </label>
@@ -48,6 +44,9 @@
             <button type="submit">Choose Index</button>
           </form>
           <% } else { %>
+            <form action="/getIndices" method="POST">
+              <button type="submit">Get Indices</button>
+            </form>
             <p>No Indices detected</p>
             <% } %>
       </div>
