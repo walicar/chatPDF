@@ -20,40 +20,18 @@
           </p>
           <% } %>
       </div>
+      <form action="/createStore" method="POST" enctype="multipart/form-data">
+        <input type="file" name="doc" required></input>
+        <label for="docname">Doc Name</label>
+        <input id="docname" type="text" name="docname" required></input>
+        <button type="submit">Create Store</button>
+      </form>
+      <!--
       <form action="/pdfupload" method="POST" enctype="multipart/form-data">
         <input type="file" name="doc" required>
         <button type="submit">Upload PDF</button>
-        <% if (status.length> 0) { %>
-          <p>
-            <%= status %>
-          </p>
-          <% } %>
       </form>
-      <div>
-        <% if (indices && indices.length> 0) { %>
-          <form action="/setIndex" method="POST">
-            <label for="index">Choose index to work use: </label>
-            <select name="index">
-              <% indices.forEach((item)=> { %>
-                <option value="<%= item %>">
-                  <%= item %>
-                </option>
-                <% }) %>
-                  <option value="none">none</option>
-            </select>
-            <button type="submit">Choose Index</button>
-          </form>
-          <% } else { %>
-            <form action="/getIndices" method="POST">
-              <button type="submit">Get Indices</button>
-            </form>
-            <p>No Indices detected</p>
-            <% } %>
-      </div>
-
-      <form action="/makeEmbeddings" method="POST">
-        <button type="submit">Create Embeddings</button>
-      </form>
+      -->
     </div>
   </main>
 </body>

@@ -29,6 +29,7 @@ let state = {
 import {
   checkIndex,
   createEmbeddings,
+  createIndex,
   getIndices,
   getPineconeStore,
   getTexts,
@@ -36,7 +37,6 @@ import {
   mockPromisePass,
   queryDoc,
 } from "./util.js";
-import { argv0 } from "process";
 // globals to be used by server only
 let texts = "";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -143,6 +143,59 @@ app.post("/setIndex", async (req, res) => {
   const desc = await checkIndex({ indexName: state.index });
   console.log(desc);
   res.redirect(redirectURL);
+});
+
+app.post("/createStore", upload.single("doc"), async (req, res) => {
+  const file = req.file;
+  let textstore = "";
+  // get texts
+  try {
+    fs.readFile(file.path, async (err, data) => {
+      if (err) throw err;
+      fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
+        if (err) throw err;
+        console.log(`File uploaded: ${file.originalname}`);
+        fs.unlink(file.path, async (err) => {
+          if (err) throw err;
+          state.currentFile = `./uploads/${file.originalname}`;
+          try {
+            textstore = await getTexts(`./uploads/${file.originalname}`);
+            state.status = `PDF Loaded Successfully`;
+            console.log(`File processed, text length: ${textstore.length}`);
+          } catch (e) {
+            console.log(e);
+          }
+        });
+      });
+    });
+  } catch (e) {
+    console.log(e);
+    state.error = "Could not upload PDF";
+  }
+  // create the index with the name
+  const docname = req.body.docname;
+  console.log("trying to create index " + docname);
+  try {
+    // await createIndex(docname);
+    await mockPromisePass();
+  } catch (e) {
+    state.error = e;
+    console.log(e);
+  }
+  // create embeddings
+  console.log("trying to create embeddings");
+  try {
+    let check = textstore.length ? true : false;
+    console.log(check);
+    // state.vectorStore = await createEmbeddings(texts, state.index);
+    await mockPromisePass();
+    console.log("Embeddings Fulfilled, vectorStore set.");
+    state.status = "Created embeddings!";
+  } catch (e) {
+    state.error = e;
+    console.log(e);
+  }
+  res.redirect("/upload");
 });
 
 app.get("/", (_req, res) => {
