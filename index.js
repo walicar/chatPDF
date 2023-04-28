@@ -52,7 +52,7 @@ app.post("/query", async (req, res) => {
     content: req.body.query,
   };
   state.messages.push(queryMessage);
-  res.render("/home", state);
+  //res.render("home", state);
   if (state.vectorStore && req.body.query) {
     try {
       // DUMMY CODE
@@ -66,12 +66,13 @@ app.post("/query", async (req, res) => {
       };
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
+      res.render("home", state);
     } catch (e) {
       state.error = e;
       console.log(e);
     }
   } else state.error = "Error sending query";
-  res.redirect("/home");
+  //res.redirect("/home");
 });
 
 app.post("/getIndices", async (req, res) => {

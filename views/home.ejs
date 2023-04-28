@@ -12,7 +12,7 @@
     <div class="top-bar">
       <div class="logo">chatPDF</div>
       <% if (indices && indices.length> 0) { %>
-          <form class="top-bar-item" action="/error" method="POST">
+          <form class="top-bar-item" action="/setIndex" method="POST">
             <!-- actionw ould actual be /setIndex-->
             <label for="index">Index: </label>
             <select onchange="this.form.submit()" name="index">
