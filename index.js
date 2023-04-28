@@ -1,6 +1,6 @@
 import express from "express";
 import http from "http";
-import { Server } from "socket.io";
+// import { Server } from "socket.io";
 import fs from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
@@ -38,57 +38,11 @@ import {
   queryDoc,
 } from "./util.js";
 // globals to be used by server only
-let texts = "";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-
-app.post("/pdfupload", upload.single("doc"), async (req, res) => {
-  const file = req.file;
-  try {
-    fs.readFile(file.path, async (err, data) => {
-      if (err) throw err;
-      fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
-        if (err) throw err;
-        console.log(`File uploaded: ${file.originalname}`);
-        fs.unlink(file.path, async (err) => {
-          if (err) throw err;
-          state.currentFile = `./uploads/${file.originalname}`;
-          try {
-            texts = await getTexts(`./uploads/${file.originalname}`);
-            state.status = `PDF Loaded Successfully`;
-            console.log(`File processed, text length: ${texts.length}`);
-          } catch (e) {
-            console.log(e);
-          }
-          res.redirect("/upload");
-        });
-      });
-    });
-  } catch (e) {
-    console.log(e);
-    state.error = "Could not upload PDF";
-  }
-});
-
-app.post("/makeEmbeddings", async (_req, res) => {
-  if (texts && state.index) {
-    console.log("trying to create embeddings");
-    try {
-      // DUMMY CODE
-      state.vectorStore = await createEmbeddings(texts, state.index);
-      // await mockPromisePass();
-      console.log("Embeddings Fulfilled, vectorStore set.");
-      state.status = "Created embeddings!";
-    } catch (e) {
-      state.error = e;
-      console.log(e);
-    }
-  } else state.error = "no texts or no selected index.";
-  res.redirect("/upload");
-});
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
@@ -176,19 +130,21 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   const docname = req.body.docname;
   console.log("trying to create index " + docname);
   try {
-    // await createIndex(docname);
-    await mockPromisePass();
+    await createIndex(docname);
+    // await mockPromisePass();
   } catch (e) {
     state.error = e;
     console.log(e);
   }
   // create embeddings
+  console.log("waiting for index to be initialized");
+  await new Promise(resolve => setTimeout(resolve, 75000));
   console.log("trying to create embeddings");
   try {
     let check = textstore.length ? true : false;
     console.log(check);
-    // state.vectorStore = await createEmbeddings(texts, state.index);
-    await mockPromisePass();
+    state.vectorStore = await createEmbeddings(textstore, docname);
+    // await mockPromisePass();
     console.log("Embeddings Fulfilled, vectorStore set.");
     state.status = "Created embeddings!";
   } catch (e) {
@@ -199,7 +155,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
 });
 
 app.get("/", (_req, res) => {
-  res.render("index", state);
+  res.redirect("/home");
 });
 
 app.get("/home", async (_req, res) => {

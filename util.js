@@ -35,6 +35,7 @@ export async function createEmbeddings(texts, indexName) {
   const index = pineconeClient.Index(indexName);
   const metadatas = [{}];
   const dbConfig = { pineconeIndex: index };
+  // need to wait if index is currently initializing
   try {
     const vectorStore = await PineconeStore.fromTexts(
       texts,
@@ -113,11 +114,11 @@ export async function createIndex(indexName) {
   }
   const createRequest = {
     name: indexName,
-    dimension: 1535,
+    dimension: 1536,
     metric: "cosine",
     podType: "p1",
   };
-  await client.createIndex({ createRequest });
+  await pineconeClient.createIndex({ createRequest });
 }
 
 export async function checkIndex(indexName) {
