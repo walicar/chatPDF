@@ -12,24 +12,23 @@
     <div class="top-bar">
       <div class="logo">chatPDF</div>
       <% if (indices && indices.length> 0) { %>
-          <form class="top-bar-item" action="/setIndex" method="POST">
-            <!-- actionw ould actual be /setIndex-->
-            <label for="index">Index: </label>
-            <select onchange="this.form.submit()" name="index">
-              <option value="none">none</option>
-              <% indices.forEach((item)=> { %>
-                <option value="<%= item %>">
-                  <%= item %>
-                </option>
-                <% }) %>
-            </select>
-          </form>
-      <% } else { %>
-        <form class="top-bar-item" action="/getIndices" method="POST">
-          <button type="submit">Get Indices</button>
+        <form class="top-bar-item" action="/setIndex" method="POST">
+          <label for="index">Index: </label>
+          <select onchange="this.form.submit()" name="index">
+            <% indices.forEach((item)=> { %>
+              <option value="<%= item %>">
+                <%= item %>
+              </option>
+              <% }) %>
+                <option value="none">none</option>
+          </select>
         </form>
-      <% } %>
-    <a class="top-bar-item" href="/upload"><button>Upload New Document</button></a>
+        <% } else { %>
+          <form class="top-bar-item" action="/getIndices" method="POST">
+            <button type="submit">Get Indices</button>
+          </form>
+          <% } %>
+            <a class="top-bar-item" href="/upload"><button>Upload New Document</button></a>
     </div>
     <div class="chat-box">
       <% messages.forEach((message)=> {%>
