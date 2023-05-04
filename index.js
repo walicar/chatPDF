@@ -12,13 +12,13 @@ const server = http.createServer(app);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
 let state = {
-  status: "",
-  currentFile: "", // will always contain path of current file
-  error: "",
-  response: "",
-  index: "",
+  status: undefined,
+  currentFile: undefined, // will always contain path of current file
+  error: undefined,
+  response: undefined,
+  index: undefined,
   indices: [],
-  vectorStore: "",
+  vectorStore: undefined,
   messages: [{
     color: "chat-color",
     name: "ChatPDF",
