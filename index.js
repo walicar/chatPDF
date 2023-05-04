@@ -11,6 +11,8 @@ const server = http.createServer(app);
 // const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
+const statePath = "state.json"
+if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
   status: undefined,
   currentFile: undefined, // will always contain path of current file
@@ -25,6 +27,7 @@ let state = {
     content: "Welcome to chatPDF, select a document and ask me a question!",
   }],
 };
+fs.writeFileSync('state.json', JSON.stringify(state));
 // idk
 import {
   checkIndex,
@@ -46,10 +49,13 @@ app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
+  /*
   if (!state.vectorStore) {
     state.error = "Choose an Index";
+    saveState();
     res.render("home", state);
   }
+  */
   const queryMessage = {
     color: "user-color",
     name: "User",
@@ -70,13 +76,17 @@ app.post("/query", async (req, res) => {
       };
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
+      saveState();
       res.render("home", state);
     } catch (e) {
       state.error = e;
       console.log(e);
     }
-  } else state.error = "Error sending query";
-  //res.redirect("/home");
+  } else {
+    state.error = "Error sending query";
+    saveState();
+    res.render("home", state)
+  }
 });
 
 app.post("/getIndices", async (req, res) => {
@@ -89,6 +99,7 @@ app.post("/getIndices", async (req, res) => {
     console.log(e);
     state.error = e;
   }
+  saveState()
   res.redirect(redirectURL);
 });
 
@@ -101,6 +112,7 @@ app.post("/setIndex", async (req, res) => {
   );
   const desc = await checkIndex({ indexName: state.index });
   console.log(desc);
+  saveState();
   res.redirect(redirectURL);
 });
 
@@ -156,6 +168,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     state.error = e;
     console.log(e);
   }
+  saveState();
   res.redirect("/upload");
 });
 
@@ -170,6 +183,7 @@ app.get("/home", async (_req, res) => {
     content: "Hey this is a test message, please delete me later",
   };
   state.messages.push(deleteMeLater);
+  saveState();
   res.render("home", state);
 });
 
@@ -188,3 +202,7 @@ server.listen(3000, () => {
   console.log("visit the new page at http://localhost:3000/home");
   console.log("visit the upload page at http://localhost:3000/upload");
 });
+
+function saveState() {
+  fs.writeFileSync('state.json', JSON.stringify(state));
+}
