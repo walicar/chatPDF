@@ -46,6 +46,10 @@ app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
+  if (!state.vectorStore) {
+    state.error = "Choose an Index";
+    res.render("home", state);
+  }
   const queryMessage = {
     color: "user-color",
     name: "User",
@@ -139,7 +143,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   }
   // create embeddings
   console.log("waiting for index to be initialized");
-  await new Promise(resolve => setTimeout(resolve, 75000));
+  await new Promise((resolve) => setTimeout(resolve, 75000));
   console.log("trying to create embeddings");
   try {
     let check = textstore.length ? true : false;
