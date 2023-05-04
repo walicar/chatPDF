@@ -15,12 +15,13 @@
         <form class="top-bar-item" action="/setIndex" method="POST">
           <label for="index">Index: </label>
           <select onchange="this.form.submit()" name="index">
+
+            <option value="none">none</option>
             <% indices.forEach((item)=> { %>
               <option value="<%= item %>">
                 <%= item %>
               </option>
               <% }) %>
-                <option value="none">none</option>
           </select>
         </form>
         <% } else { %>
