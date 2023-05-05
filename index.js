@@ -71,7 +71,7 @@ app.post("/query", async (req, res) => {
       console.log("Query Fulfilled");
       saveState();
       //res.render("home", state);
-      res.redirect("/home")
+      res.redirect("/home");
     } catch (e) {
       state.error = e;
       console.log(e);
@@ -80,7 +80,7 @@ app.post("/query", async (req, res) => {
     state.error = "Error sending query";
     saveState();
     //res.render("home", state);
-    res.redirect("/home")
+    res.redirect("/home");
   }
 });
 
@@ -180,14 +180,7 @@ app.get("/", (_req, res) => {
   res.redirect("/home");
 });
 
-app.get("/home", async (_req, res) => {
-  const deleteMeLater = {
-    color: "user-color",
-    name: "User",
-    content: "Hey this is a test message, please delete me later",
-  };
-  state.messages.push(deleteMeLater);
-  saveState();
+app.get("/home", (_req, res) => {
   res.render("home", state);
 });
 
