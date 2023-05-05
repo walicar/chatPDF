@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
-const statePath = "state.json"
+const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
   status: undefined,
@@ -19,7 +19,7 @@ let state = {
   error: undefined,
   response: undefined,
   index: undefined,
-  indices: [],
+  indices: ["none"],
   vectorStore: undefined,
   messages: [{
     color: "chat-color",
@@ -27,7 +27,7 @@ let state = {
     content: "Welcome to chatPDF, select a document and ask me a question!",
   }],
 };
-fs.writeFileSync('state.json', JSON.stringify(state));
+fs.writeFileSync("state.json", JSON.stringify(state));
 // idk
 import {
   checkIndex,
@@ -85,7 +85,7 @@ app.post("/query", async (req, res) => {
   } else {
     state.error = "Error sending query";
     saveState();
-    res.render("home", state)
+    res.render("home", state);
   }
 });
 
@@ -93,23 +93,32 @@ app.post("/getIndices", async (req, res) => {
   console.log("Attempting to get indices");
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
-    state.indices = await getIndices();
+    const res = await getIndices();
+    state.indices.push(res);
     console.log(state.indices);
   } catch (e) {
     console.log(e);
     state.error = e;
   }
-  saveState()
+  saveState();
   res.redirect(redirectURL);
 });
 
 app.post("/setIndex", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   state.index = req.body.index;
-  state.vectorStore = await getPineconeStore(state.index);
-  console.log(
-    `state.index set to: ${req.body.index}, state.vectorStore is set`,
-  );
+  try {
+    state.vectorStore = await getPineconeStore(state.index);
+    console.log(
+      `state.index set to: ${req.body.index}, state.vectorStore is set`,
+    );
+    // then change how the indices are listed
+    state.indices.splice(state.indices.indexOf(state.index), 1);
+    state.indices.unshift(state.index);
+  } catch (e) {
+    console.log(e);
+    state.error = e;
+  }
   const desc = await checkIndex({ indexName: state.index });
   console.log(desc);
   saveState();
@@ -204,5 +213,5 @@ server.listen(3000, () => {
 });
 
 function saveState() {
-  fs.writeFileSync('state.json', JSON.stringify(state));
+  fs.writeFileSync("state.json", JSON.stringify(state));
 }
