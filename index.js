@@ -49,13 +49,6 @@ app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
-  /*
-  if (!state.vectorStore) {
-    state.error = "Choose an Index";
-    saveState();
-    res.render("home", state);
-  }
-  */
   const queryMessage = {
     color: "user-color",
     name: "User",
