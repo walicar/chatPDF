@@ -1,6 +1,5 @@
 import express from "express";
 import http from "http";
-// import { Server } from "socket.io";
 import fs from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
@@ -187,12 +186,6 @@ app.get("/home", (_req, res) => {
 app.get("/upload", (_req, res) => {
   res.render("upload", state);
 });
-
-/*
-io.on('connection', (socket) => {
-  console.log('a user has connected');
-})
-*/
 
 server.listen(3000, () => {
   console.log("listening on http://localhost:3000/");
