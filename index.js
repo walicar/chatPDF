@@ -48,14 +48,14 @@ app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
-  const queryMessage = {
-    color: "user-color",
-    name: "User",
-    content: req.body.query,
-  };
-  state.messages.push(queryMessage);
-  //res.render("home", state);
   if (state.vectorStore && req.body.query) {
+    const queryMessage = {
+      color: "user-color",
+      name: "User",
+      content: req.body.query,
+    };
+    state.messages.push(queryMessage);
+
     try {
       // DUMMY CODE
       const response = await queryDoc(req.body.query, state.vectorStore);
@@ -73,12 +73,19 @@ app.post("/query", async (req, res) => {
       res.redirect("/home");
     } catch (e) {
       state.error = e;
+      const errorMessage = {
+        color: "chat-color",
+        name: "ChatPDF",
+        content: state.error,
+      };
+      state.messages.push(errorMessage);
+      saveState();
       console.log(e);
+      res.render("home", state);
     }
   } else {
     state.error = "Error sending query";
     saveState();
-    //res.render("home", state);
     res.redirect("/home");
   }
 });
@@ -91,8 +98,14 @@ app.post("/getIndices", async (req, res) => {
     state.indices.push(res);
     console.log(state.indices);
   } catch (e) {
-    console.log(e);
     state.error = e;
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
+    console.log(e);
   }
   saveState();
   res.redirect(redirectURL);
@@ -110,8 +123,14 @@ app.post("/setIndex", async (req, res) => {
     state.indices.splice(state.indices.indexOf(state.index), 1);
     state.indices.unshift(state.index);
   } catch (e) {
-    console.log(e);
     state.error = e;
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
+    console.log(e);
   }
   const desc = await checkIndex({ indexName: state.index });
   console.log(desc);
@@ -171,6 +190,13 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     state.error = e;
     console.log(e);
   }
+  state.error = e;
+  const errorMessage = {
+    color: "chat-color",
+    name: "ChatPDF",
+    content: state.error,
+  };
+  state.messages.push(errorMessage);
   saveState();
   res.redirect("/upload");
 });
