@@ -23,7 +23,9 @@
       <form action="/createStore" method="POST" enctype="multipart/form-data">
         <input type="file" name="doc" required></input>
         <label for="docname">Doc Name</label>
-        <input id="docname" type="text" name="docname" required></input>
+        <input id="docname" type="text" name="docname" required
+          title="Please enter a 3 to 5 character string with letters and numbers only."
+          pattern="^[a-zA-Z0-9]{3,5}$"></input>
         <button type="submit">Create Store</button>
       </form>
       <!--
