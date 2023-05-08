@@ -113,27 +113,35 @@ app.post("/getIndices", async (req, res) => {
 
 app.post("/setIndex", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
-  state.index = req.body.index;
-  try {
-    state.vectorStore = await getPineconeStore(state.index);
-    console.log(
-      `state.index set to: ${req.body.index}, state.vectorStore is set`,
-    );
-    // then change how the indices are listed
+  if (req.body.index == "none") {
+    state.index = req.body.index;
+    state.vectorStore = undefined;
+    console.log("state index is set to none");
     state.indices.splice(state.indices.indexOf(state.index), 1);
     state.indices.unshift(state.index);
-  } catch (e) {
-    state.error = e;
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
-    state.messages.push(errorMessage);
-    console.log(e);
+  } else {
+    try {
+      state.index = req.body.index;
+      state.vectorStore = await getPineconeStore(state.index);
+      console.log(
+        `state.index set to: ${req.body.index}, state.vectorStore is set`,
+      );
+      // then change how the indices are listed
+      state.indices.splice(state.indices.indexOf(state.index), 1);
+      state.indices.unshift(state.index);
+      const desc = await checkIndex({ indexName: state.index });
+      console.log(desc);
+    } catch (e) {
+      state.error = e;
+      const errorMessage = {
+        color: "chat-color",
+        name: "ChatPDF",
+        content: state.error,
+      };
+      state.messages.push(errorMessage);
+      console.log(e);
+    }
   }
-  const desc = await checkIndex({ indexName: state.index });
-  console.log(desc);
   saveState();
   res.redirect(redirectURL);
 });
