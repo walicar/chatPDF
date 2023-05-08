@@ -95,7 +95,7 @@ app.post("/getIndices", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
     const res = await getIndices();
-    state.indices.push(res);
+    state.indices = state.indices.concat(res);
     console.log(state.indices);
   } catch (e) {
     state.error = e;
