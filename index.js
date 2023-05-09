@@ -211,7 +211,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     state.error = e;
     console.log(e);
   }
-  state.error = e;
   const errorMessage = {
     color: "chat-color",
     name: "ChatPDF",
