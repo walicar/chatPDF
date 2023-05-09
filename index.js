@@ -146,6 +146,19 @@ app.post("/setIndex", async (req, res) => {
   res.redirect(redirectURL);
 });
 
+app.post("/deleteStore", (req, res) => {
+  if (state.index == req.body.index) {
+    state.index = undefined;
+    state.vectorStore = undefined;
+  }
+  state.indices.splice(state.indices.indexOf(req.body.index), 1);
+  console.log('deleted store');
+  console.log(state);
+  // deleteIndex(req.body.index);
+  saveState()
+  res.redirect("/upload");
+});
+
 app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
   let textstore = "";
