@@ -131,7 +131,7 @@ export async function deleteIndex(indexName) {
   } catch (e) {
     console.log(e);
   }
-  await pineconeClient.deleteIndex({ indexName })
+  await pineconeClient.deleteIndex({ indexName });
 }
 
 export async function checkIndex(indexName) {
@@ -144,7 +144,7 @@ export async function checkIndex(indexName) {
   } catch (e) {
     console.log(e);
   }
-  const result = await pineconeClient.describeIndex(indexName);
+  const result = await pineconeClient.describeIndex({ indexName });
   return result;
 }
 
