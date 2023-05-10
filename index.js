@@ -32,6 +32,7 @@ import {
   checkIndex,
   createEmbeddings,
   createIndex,
+  deleteIndex,
   getIndices,
   getPineconeStore,
   getTexts,
@@ -146,7 +147,7 @@ app.post("/setIndex", async (req, res) => {
   res.redirect(redirectURL);
 });
 
-app.post("/deleteStore", (req, res) => {
+app.post("/deleteStore", async (req, res) => {
   if (state.index == req.body.index) {
     state.index = undefined;
     state.vectorStore = undefined;
@@ -154,7 +155,7 @@ app.post("/deleteStore", (req, res) => {
   state.indices.splice(state.indices.indexOf(req.body.index), 1);
   console.log('deleted store');
   console.log(state);
-  // deleteIndex(req.body.index);
+  await deleteIndex(req.body.index);
   saveState()
   res.redirect("/upload");
 });
