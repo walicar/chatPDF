@@ -144,7 +144,7 @@ export async function checkIndex(indexName) {
   } catch (e) {
     console.log(e);
   }
-  const result = await pineconeClient.describeIndex({ indexName });
+  const result = await pineconeClient.describeIndex(indexName);
   return result;
 }
 
