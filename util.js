@@ -121,6 +121,19 @@ export async function createIndex(indexName) {
   await pineconeClient.createIndex({ createRequest });
 }
 
+export async function deleteIndex(indexName) {
+  const pineconeClient = new PineconeClient();
+  try {
+    await pineconeClient.init({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_API_ENV,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+  await pineconeClient.deleteIndex({ indexName })
+}
+
 export async function checkIndex(indexName) {
   const pineconeClient = new PineconeClient();
   try {
