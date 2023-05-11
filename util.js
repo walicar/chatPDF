@@ -81,7 +81,7 @@ export async function getIndices() {
   }
 }
 
-export async function getPineconeStore(indexName) {
+export async function getStore(indexName) {
   const fields = { openAIApiKey: process.env.OPENAI_API_KEY };
   const embeddings = new OpenAIEmbeddings(fields);
   const pineconeClient = new PineconeClient();

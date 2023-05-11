@@ -33,7 +33,7 @@ import {
   createIndex,
   deleteIndex,
   getIndices,
-  getPineconeStore,
+  getStore,
   getTexts,
   mockPromiseFail,
   mockPromisePass,
@@ -119,7 +119,7 @@ app.post("/setIndex", async (req, res) => {
   } else {
     try {
       state.index = req.body.index;
-      state.vectorStore = await getPineconeStore(state.index);
+      state.vectorStore = await getStore(state.index);
       console.log(
         `state.index set to: ${req.body.index}, state.vectorStore is set`,
       );
