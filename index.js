@@ -13,7 +13,6 @@ const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
   status: undefined,
-  currentFile: undefined, // will always contain path of current file
   error: undefined,
   response: undefined,
   index: undefined,
@@ -168,7 +167,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
         console.log(`File uploaded: ${file.originalname}`);
         fs.unlink(file.path, async (err) => {
           if (err) throw err;
-          state.currentFile = `./uploads/${file.originalname}`;
           try {
             textstore = await getTexts(`./uploads/${file.originalname}`);
             state.status = `PDF Loaded Successfully`;
