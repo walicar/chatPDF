@@ -149,7 +149,7 @@ export async function checkIndex(indexName) {
 }
 
 export async function mockPromisePass() {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((resolve, _reject) => {
     setTimeout(() => {
       resolve("mockPromise resolved in 1s");
     }, 1000);
@@ -158,10 +158,24 @@ export async function mockPromisePass() {
 }
 
 export async function mockPromiseFail() {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise((_resolve, reject) => {
     setTimeout(() => {
       reject("mockPromise resolved in 1s");
     }, 1000);
   });
   return promise;
 }
+
+const util = {
+  queryDoc,
+  getTexts,
+  getStore,
+  getIndices,
+  createIndex,
+  createEmbeddings,
+  deleteIndex,
+  mockPromisePass,
+  mockPromiseFail,
+};
+
+export { util };

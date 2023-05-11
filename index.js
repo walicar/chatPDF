@@ -26,18 +26,7 @@ let state = {
 };
 fs.writeFileSync("state.json", JSON.stringify(state));
 // idk
-import {
-  checkIndex,
-  createEmbeddings,
-  createIndex,
-  deleteIndex,
-  getIndices,
-  getStore,
-  getTexts,
-  mockPromiseFail,
-  mockPromisePass,
-  queryDoc,
-} from "./util.js";
+import { util } from "./util.js";
 // globals to be used by server only
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -56,7 +45,7 @@ app.post("/query", async (req, res) => {
     state.messages.push(queryMessage);
     try {
       // DUMMY CODE
-      const response = await queryDoc(req.body.query, state.vectorStore);
+      const response = await util.queryDoc(req.body.query, state.vectorStore);
       state.response = response;
       // state.response = await mockPromisePass();
       const answerMessage = {
@@ -90,7 +79,7 @@ app.post("/getIndices", async (req, res) => {
   console.log("Attempting to get indices");
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
-    const res = await getIndices();
+    const res = await util.getIndices();
     state.indices = state.indices.concat(res);
     console.log(state.indices);
   } catch (e) {
@@ -118,14 +107,14 @@ app.post("/setIndex", async (req, res) => {
   } else {
     try {
       state.index = req.body.index;
-      state.vectorStore = await getStore(state.index);
+      state.vectorStore = await util.getStore(state.index);
       console.log(
         `state.index set to: ${req.body.index}, state.vectorStore is set`,
       );
       // then change how the indices are listed
       state.indices.splice(state.indices.indexOf(state.index), 1);
       state.indices.unshift(state.index);
-      const desc = await checkIndex({ indexName: state.index });
+      const desc = await util.checkIndex({ indexName: state.index });
       console.log(desc);
     } catch (e) {
       state.error = e;
@@ -148,10 +137,10 @@ app.post("/deleteStore", async (req, res) => {
     state.vectorStore = undefined;
   }
   state.indices.splice(state.indices.indexOf(req.body.index), 1);
-  console.log('deleted store');
+  console.log("deleted store");
   console.log(state);
-  await deleteIndex(req.body.index);
-  saveState()
+  await util.deleteIndex(req.body.index);
+  saveState();
   res.redirect("/upload");
 });
 
@@ -168,7 +157,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
         fs.unlink(file.path, async (err) => {
           if (err) throw err;
           try {
-            textstore = await getTexts(`./uploads/${file.originalname}`);
+            textstore = await util.getTexts(`./uploads/${file.originalname}`);
             state.status = `PDF Loaded Successfully`;
             console.log(`File processed, text length: ${textstore.length}`);
           } catch (e) {
@@ -185,7 +174,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   const docname = req.body.docname;
   console.log("trying to create index " + docname);
   try {
-    await createIndex(docname);
+    await util.createIndex(docname);
     // await mockPromisePass();
   } catch (e) {
     state.error = e;
@@ -198,7 +187,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   try {
     let check = textstore.length ? true : false;
     console.log(check);
-    state.vectorStore = await createEmbeddings(textstore, docname);
+    state.vectorStore = await util.createEmbeddings(textstore, docname);
     // await mockPromisePass();
     console.log("Embeddings Fulfilled, vectorStore set.");
     state.status = "Created embeddings!";
