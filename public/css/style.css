@@ -7,6 +7,13 @@ input, form, label {
   font-size: 18px;
 }
 
+input[type=file] {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 325px;
+}
+
 button, select {
   font-size: 15px;
 }
@@ -85,4 +92,8 @@ button, select {
 
 .chat-color {
   color: red;
+}
+
+.index-form input {
+  margin-bottom: 10px;
 }
