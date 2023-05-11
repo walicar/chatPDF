@@ -55,7 +55,6 @@ app.post("/query", async (req, res) => {
       content: req.body.query,
     };
     state.messages.push(queryMessage);
-
     try {
       // DUMMY CODE
       const response = await queryDoc(req.body.query, state.vectorStore);
@@ -68,7 +67,6 @@ app.post("/query", async (req, res) => {
       };
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
-      saveState();
       //res.render("home", state);
       res.redirect("/home");
     } catch (e) {
@@ -79,15 +77,14 @@ app.post("/query", async (req, res) => {
         content: state.error,
       };
       state.messages.push(errorMessage);
-      saveState();
       console.log(e);
       res.render("home", state);
     }
   } else {
     state.error = "Error sending query";
-    saveState();
     res.redirect("/home");
   }
+  saveState();
 });
 
 app.post("/getIndices", async (req, res) => {
