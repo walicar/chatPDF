@@ -7,7 +7,6 @@ import path from "path";
 import { fileURLToPath, parse } from "url";
 const app = express();
 const server = http.createServer(app);
-// const io = new Server(server);
 const upload = multer({ dest: "uploads/" });
 // store me somewhere else, export me yknow, put me into an object
 const statePath = "state.json";
