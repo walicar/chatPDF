@@ -70,6 +70,12 @@ app.post("/query", async (req, res) => {
     }
   } else {
     state.error = "Error sending query";
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
     res.redirect("/home");
   }
   saveState();
