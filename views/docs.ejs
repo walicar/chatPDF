@@ -24,11 +24,11 @@
         <h2>Create Index</h2>
         <form class='index-form' action="/createStore" method="POST" enctype="multipart/form-data">
           <input type="file" name="doc" required></input>
-          <br><label for="docname">Doc Name</label>
+          <br><label for="docname">Document Name</label>
           <input id="docname" type="text" name="docname" size="9" required
             title="Please enter a 3 to 5 character string with letters and numbers only"
             pattern="^[a-zA-Z0-9]{3,5}$"></input><br>
-          <button type="submit">Create Store</button>
+          <button type="submit">Upload Document</button>
         </form>
       </div>
       <div>
@@ -47,7 +47,7 @@
           </form>
           <% } else { %>
             <form action="/getIndices" method="POST">
-              <button type="submit">Get Indices</button>
+              <button type="submit">Get Documents</button>
             </form>
             <% } %>
       </div>

@@ -141,7 +141,7 @@ app.post("/deleteStore", async (req, res) => {
   console.log(state);
   await util.deleteIndex(req.body.index);
   saveState();
-  res.redirect("/upload");
+  res.redirect("/docs");
 });
 
 app.post("/createStore", upload.single("doc"), async (req, res) => {
@@ -202,7 +202,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   };
   state.messages.push(errorMessage);
   saveState();
-  res.redirect("/upload");
+  res.redirect("/docs");
 });
 
 app.get("/", (_req, res) => {
@@ -213,14 +213,14 @@ app.get("/home", (_req, res) => {
   res.render("home", state);
 });
 
-app.get("/upload", (_req, res) => {
-  res.render("upload", state);
+app.get("/docs", (_req, res) => {
+  res.render("docs", state);
 });
 
 server.listen(3000, () => {
   console.log("listening on http://localhost:3000/");
   console.log("visit the new page at http://localhost:3000/home");
-  console.log("visit the upload page at http://localhost:3000/upload");
+  console.log("visit the docs page at http://localhost:3000/docs");
 });
 
 function saveState() {

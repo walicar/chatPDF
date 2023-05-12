@@ -35,10 +35,10 @@
         </form>
         <% } else { %>
           <form class="top-bar-item" action="/getIndices" method="POST">
-            <button type="submit">Get Indices</button>
+            <button type="submit">Get Documents</button>
           </form>
           <% } %>
-            <a class="top-bar-item" href="/upload"><button>Upload New Document</button></a>
+            <a class="top-bar-item" href="/docs"><button>Manage Documents</button></a>
     </div>
     <div class="chat-box" id="chat-box-id">
       <% messages.forEach((message)=> {%>
