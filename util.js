@@ -172,6 +172,7 @@ const util = {
   getStore,
   getIndices,
   createIndex,
+  checkIndex,
   createEmbeddings,
   deleteIndex,
   mockPromisePass,

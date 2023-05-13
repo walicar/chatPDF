@@ -40,7 +40,7 @@ app.post("/query", async (req, res) => {
     const queryMessage = {
       color: "user-color",
       name: "User",
-      content: req.body.query,
+      content: "\xa0" + req.body.query,
     };
     state.messages.push(queryMessage);
     try {
@@ -175,6 +175,12 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     console.log(e);
     state.error = "Could not upload PDF";
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
   }
   // create the index with the name
   const docname = req.body.docname;
@@ -185,6 +191,12 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     state.error = e;
     console.log(e);
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
   }
   // create embeddings
   console.log("waiting for index to be initialized");
@@ -200,13 +212,13 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     state.error = e;
     console.log(e);
+    const errorMessage = {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: state.error,
+    };
+    state.messages.push(errorMessage);
   }
-  const errorMessage = {
-    color: "chat-color",
-    name: "ChatPDF",
-    content: state.error,
-  };
-  state.messages.push(errorMessage);
   saveState();
   res.redirect("/docs");
 });
