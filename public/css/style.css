@@ -6,6 +6,10 @@
   font-family: "Source Sans Pro", sans-serif;
 }
 
+textarea {
+  font-family: "Source Sans Pro", sans-serif;
+}
+
 input,
 form,
 label {
@@ -38,7 +42,8 @@ textarea {
   padding: 2px;
 }
 
-button, select {
+button,
+select {
   background-color: rgba(51, 51, 51, 0.09);
   border-radius: 8px;
   padding: 6px;
