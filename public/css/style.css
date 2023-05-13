@@ -1,35 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap");
+
 :root {
   font-size: 18px;
-  --border-theme: 3px solid black;
+  --border-theme: 2.5px solid black;
+  font-family: "Source Sans Pro", sans-serif;
 }
 
-input, form, label {
+input,
+form,
+label {
   font-size: 18px;
 }
 
-input[type=file] {
+input[type="file"] {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 325px;
 }
 
-button, select {
+input[type="file"]::file-selector-button {
+  background-color: rgba(51, 51, 51, 0.09);
+  border-radius: 8px;
+  padding: 6px;
+  border: none;
   font-size: 15px;
 }
+
+button,
+select {
+  font-size: 15px;
+}
+
+textarea {
+  border-radius: 8px;
+  border: var(--border-theme);
+  padding: 2px;
+}
+
+button {
+  background-color: rgba(51, 51, 51, 0.09);
+  border-radius: 8px;
+  padding: 6px;
+  border: none;
+}
+
 .container {
   margin: 0% auto;
-  height: 95vh;
+  height: calc(100vh - 22px);
   width: 80%;
   display: grid;
-  /*padding: 0px 10px;*/
   grid-template-areas:
-  "top-bar top-bar top-bar"
-  "chat-box chat-box chat-box"
-  "query-box query-box query-box";
+    "top-bar top-bar top-bar"
+    "chat-box chat-box chat-box"
+    "query-box query-box query-box";
   grid-template-rows: 46px 1fr 110px;
   border: var(--border-theme);
-  border-radius: 5px;
+  border-radius: 21px;
 }
 
 .top-bar {
@@ -46,22 +73,18 @@ button, select {
 }
 
 .top-bar > .top-bar-item {
-  padding-top: 10px;
-  border-left: var(--border-theme);
+  padding-top: 6.5px;
+  /* border-left: var(--border-theme); */
 }
 
 .logo {
   display: inline;
-  font-size: 2.5em;
+  font-size: 2em;
   font-weight: bold;
   flex-grow: 3;
 }
 
-.chat-box { 
-  /*
-  border: blue;
-  border-style: solid;
-  */
+.chat-box {
   padding: 0px 10px;
   grid-area: chat-box;
   overflow: scroll;
@@ -76,9 +99,9 @@ button, select {
 .query-box form {
   padding: 0px 10px;
   display: flex;
-  gap:10px;
+  gap: 10px;
   flex-direction: row;
-  height:90px
+  height: 90px;
 }
 
 #query-input {
@@ -87,11 +110,17 @@ button, select {
 }
 
 .user-color {
-  color: blue;
+  color: white;
+  background: blue;
+  border-radius: 3px;
+  padding: 1px;
 }
 
 .chat-color {
-  color: red;
+  color: white;
+  background: red;
+  border-radius: 3px;
+  padding: 1px;
 }
 
 .index-form input {

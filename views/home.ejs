@@ -9,7 +9,7 @@
     function showQuery() {
       var newPar = document.createElement('p');
       var newSpan = document.createElement('span');
-      newSpan.textContent = '[User] '
+      newSpan.textContent = '[User]' + "\xa0"
       newSpan.className = 'user-color'
       newPar.textContent = document.getElementById('query-input').value;
       newPar.insertBefore(newSpan, newPar.firstChild);
@@ -35,7 +35,7 @@
         </form>
         <% } else { %>
           <form class="top-bar-item" action="/getIndices" method="POST">
-            <button type="submit">Get Documents</button>
+            <button class='button-2' type="submit">Get Documents</button>
           </form>
           <% } %>
             <a class="top-bar-item" href="/docs"><button>Manage Documents</button></a>
@@ -43,7 +43,7 @@
     <div class="chat-box" id="chat-box-id">
       <% messages.forEach((message)=> {%>
         <p>
-          <span class="<%= message.color %>">[<%= message.name %>] </span>
+          <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;
           <%= message.content %>
         </p>
         <% }) %>
