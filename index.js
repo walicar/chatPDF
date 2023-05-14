@@ -232,6 +232,8 @@ app.get("/home", (_req, res) => {
 });
 
 app.get("/docs", (_req, res) => {
+  state.error = undefined;
+  saveState();
   res.render("docs", state);
 });
 
