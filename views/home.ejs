@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
-  <!--TODO You should make the some of the classes into IDs, just like class='chat-box'-->
 <head>
   <title>chatPDF</title>
   <!-- <link rel="stylesheet" type="text/css" href="/css/pico.min.css"> -->
@@ -13,14 +12,14 @@
       newSpan.className = 'user-color'
       newPar.textContent = document.getElementById('query-input').value;
       newPar.insertBefore(newSpan, newPar.firstChild);
-      document.getElementById("chat-box-id").append(newPar);
+      document.getElementById("chat-box").append(newPar);
     }
   </script>
 </head>
 
 <body>
   <main class="container main-page">
-    <div class="top-bar">
+    <div id="top-bar">
       <div class="logo">chatPDF</div>
       <% if (indices && indices.length> 1) { %>
         <form class="top-bar-item" action="/setIndex" method="POST">
@@ -40,7 +39,7 @@
           <% } %>
             <a class="top-bar-item" href="/docs"><button>Manage Documents</button></a>
     </div>
-    <div class="chat-box" id="chat-box-id">
+    <div id="chat-box">
       <% messages.forEach((message)=> {%>
         <p>
           <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;
@@ -48,7 +47,7 @@
         </p>
         <% }) %>
     </div>
-    <div class="query-box">
+    <div id="query-box">
       <form onsubmit="showQuery()" action="/query" method="POST">
         <textarea required id="query-input" type="text" name="query"></textarea>
         <button type="submit">Query</button>
