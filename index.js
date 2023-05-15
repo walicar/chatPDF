@@ -41,14 +41,12 @@ app.post("/query", async (req, res) => {
     const queryMessage = util.makeMessage("user-color", "User", content);
     state.messages.push(queryMessage);
     try {
-      // DUMMY CODE
       const response = await util.queryDoc(req.body.query, state.vectorStore);
       state.response = response;
       // state.response = await mockPromisePass();
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
-      //res.render("home", state);
       res.redirect("/home");
     } catch (e) {
       state.error = e;
