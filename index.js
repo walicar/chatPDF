@@ -37,44 +37,29 @@ app.use(express.static("public"));
 app.post("/query", async (req, res) => {
   console.log(`Query to be sent: ${req.body.query}`);
   if (state.vectorStore && req.body.query) {
-    const queryMessage = {
-      color: "user-color",
-      name: "User",
-      content: "\xa0" + req.body.query,
-    };
+    const content = "\xa0" + req.body.query;
+    const queryMessage = util.makeMessage("user-color", "User", content);
     state.messages.push(queryMessage);
     try {
       // DUMMY CODE
       const response = await util.queryDoc(req.body.query, state.vectorStore);
       state.response = response;
       // state.response = await mockPromisePass();
-      const answerMessage = {
-        color: "chat-color",
-        name: "ChatPDF",
-        content: response,
-      };
+      const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
       //res.render("home", state);
       res.redirect("/home");
     } catch (e) {
       state.error = e;
-      const errorMessage = {
-        color: "chat-color",
-        name: "ChatPDF",
-        content: state.error,
-      };
+      const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
       state.messages.push(errorMessage);
       console.log(e);
       res.render("home", state);
     }
   } else {
     state.error = "Error sending query";
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
+    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
     state.messages.push(errorMessage);
     res.redirect("/home");
   }
@@ -90,11 +75,7 @@ app.post("/getIndices", async (req, res) => {
     console.log(state.indices);
   } catch (e) {
     state.error = e;
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
+    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
     state.messages.push(errorMessage);
     console.log(e);
   }
@@ -124,11 +105,7 @@ app.post("/setIndex", async (req, res) => {
       console.log(desc);
     } catch (e) {
       state.error = e;
-      const errorMessage = {
-        color: "chat-color",
-        name: "ChatPDF",
-        content: state.error,
-      };
+      const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
       state.messages.push(errorMessage);
       console.log(e);
     }
@@ -175,11 +152,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     console.log(e);
     state.error = "Could not upload PDF";
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
+    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
     state.messages.push(errorMessage);
   }
   // create the index with the name
@@ -191,11 +164,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     state.error = e;
     console.log(e);
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
+    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
     state.messages.push(errorMessage);
   }
   // create embeddings
@@ -212,11 +181,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   } catch (e) {
     state.error = e;
     console.log(e);
-    const errorMessage = {
-      color: "chat-color",
-      name: "ChatPDF",
-      content: state.error,
-    };
+    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
     state.messages.push(errorMessage);
   }
   saveState();

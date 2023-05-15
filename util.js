@@ -166,6 +166,15 @@ export async function mockPromiseFail() {
   return promise;
 }
 
+export function makeMessage(color, name, content) {
+  const message = {
+    color: color,
+    name: name,
+    content: content,
+  };
+  return message;
+}
+
 const util = {
   queryDoc,
   getTexts,
@@ -175,6 +184,7 @@ const util = {
   checkIndex,
   createEmbeddings,
   deleteIndex,
+  makeMessage,
   mockPromisePass,
   mockPromiseFail,
 };
