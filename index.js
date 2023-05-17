@@ -28,7 +28,7 @@ fs.writeFileSync("state.json", JSON.stringify(state));
 // idk
 import { util } from "./util.js";
 // globals to be used by server only
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+path.dirname(fileURLToPath(import.meta.url));
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
