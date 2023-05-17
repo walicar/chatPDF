@@ -5,10 +5,10 @@ import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath, parse } from "url";
+import { util } from "./util.js";
 const app = express();
 const server = http.createServer(app);
 const upload = multer({ dest: "uploads/" });
-// store me somewhere else, export me yknow, put me into an object
 const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
@@ -24,11 +24,8 @@ let state = {
   }],
 };
 fs.writeFileSync("state.json", JSON.stringify(state));
-// idk
-import { util } from "./util.js";
-// globals to be used by server only
-path.dirname(fileURLToPath(import.meta.url));
 
+path.dirname(fileURLToPath(import.meta.url));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
