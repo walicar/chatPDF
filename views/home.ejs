@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <title>chatPDF</title>
   <!-- <link rel="stylesheet" type="text/css" href="/css/pico.min.css"> -->
@@ -8,9 +9,10 @@
     function showQuery() {
       var newPar = document.createElement('p');
       var newSpan = document.createElement('span');
-      newSpan.textContent = '[User]' + "\xa0"
+      newSpan.textContent = '[User]'
       newSpan.className = 'user-color'
-      newPar.textContent = document.getElementById('query-input').value;
+      newPar.style.whiteSpace = "pre";
+      newPar.textContent = "\u00A0" + document.getElementById('query-input').value;
       newPar.insertBefore(newSpan, newPar.firstChild);
       document.getElementById("chat-box").append(newPar);
     }
@@ -42,8 +44,7 @@
     <div id="chat-box">
       <% messages.forEach((message)=> {%>
         <p>
-          <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;
-          <%= message.content %>
+          <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;<%= message.content %>
         </p>
         <% }) %>
     </div>

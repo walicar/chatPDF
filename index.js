@@ -32,7 +32,7 @@ app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
   if (state.vectorStore && req.body.query) {
-    const content = "\xa0" + req.body.query;
+    const content = req.body.query;
     const queryMessage = util.makeMessage("user-color", "User", content);
     state.messages.push(queryMessage);
     try {

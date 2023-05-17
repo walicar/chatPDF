@@ -50,7 +50,6 @@ export async function createEmbeddings(texts, indexName) {
 }
 
 export async function queryDoc(query, vectorStore) {
-  console.log("inside querydoc");
   try {
     const docs = await vectorStore.similaritySearch(query);
     const llm = new OpenAI({
@@ -59,7 +58,6 @@ export async function queryDoc(query, vectorStore) {
     });
     const chain = loadQAStuffChain(llm);
     const answer = await chain.call({ input_documents: docs, question: query });
-    console.log(answer);
     // might need to return {answer }k
     return answer.text;
   } catch (e) {
