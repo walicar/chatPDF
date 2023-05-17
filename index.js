@@ -12,7 +12,6 @@ const upload = multer({ dest: "uploads/" });
 const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
-  status: undefined,
   error: undefined,
   response: undefined,
   index: undefined,
@@ -35,7 +34,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.post("/query", async (req, res) => {
-  console.log(`Query to be sent: ${req.body.query}`);
   if (state.vectorStore && req.body.query) {
     const content = "\xa0" + req.body.query;
     const queryMessage = util.makeMessage("user-color", "User", content);
@@ -43,7 +41,6 @@ app.post("/query", async (req, res) => {
     try {
       const response = await util.queryDoc(req.body.query, state.vectorStore);
       state.response = response;
-      // state.response = await mockPromisePass();
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
@@ -65,12 +62,10 @@ app.post("/query", async (req, res) => {
 });
 
 app.post("/getIndices", async (req, res) => {
-  console.log("Attempting to get indices");
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
     const res = await util.getIndices();
     state.indices = state.indices.concat(res);
-    console.log(state.indices);
   } catch (e) {
     state.error = e;
     const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
@@ -86,21 +81,15 @@ app.post("/setIndex", async (req, res) => {
   if (req.body.index == "none") {
     state.index = req.body.index;
     state.vectorStore = undefined;
-    console.log("state index is set to none");
     state.indices.splice(state.indices.indexOf(state.index), 1);
     state.indices.unshift(state.index);
   } else {
     try {
       state.index = req.body.index;
       state.vectorStore = await util.getStore(state.index);
-      console.log(
-        `state.index set to: ${req.body.index}, state.vectorStore is set`,
-      );
       // then change how the indices are listed
       state.indices.splice(state.indices.indexOf(state.index), 1);
       state.indices.unshift(state.index);
-      const desc = await util.checkIndex({ indexName: state.index });
-      console.log(desc);
     } catch (e) {
       state.error = e;
       const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
@@ -118,8 +107,6 @@ app.post("/deleteStore", async (req, res) => {
     state.vectorStore = undefined;
   }
   state.indices.splice(state.indices.indexOf(req.body.index), 1);
-  console.log("deleted store");
-  console.log(state);
   await util.deleteIndex(req.body.index);
   saveState();
   res.redirect("/docs");
@@ -139,8 +126,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
           if (err) throw err;
           try {
             textstore = await util.getTexts(`./uploads/${file.originalname}`);
-            state.status = `PDF Loaded Successfully`;
-            console.log(`File processed, text length: ${textstore.length}`);
           } catch (e) {
             console.log(e);
           }
@@ -155,7 +140,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   }
   // create the index with the name
   const docname = req.body.docname;
-  console.log("trying to create index " + docname);
   try {
     await util.createIndex(docname);
     // await mockPromisePass();
@@ -166,16 +150,11 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     state.messages.push(errorMessage);
   }
   // create embeddings
-  console.log("waiting for index to be initialized");
   await new Promise((resolve) => setTimeout(resolve, 75000));
-  console.log("trying to create embeddings");
   try {
-    let check = textstore.length ? true : false;
-    console.log(check);
     state.vectorStore = await util.createEmbeddings(textstore, docname);
     // await mockPromisePass();
-    console.log("Embeddings Fulfilled, vectorStore set.");
-    state.status = "Created embeddings!";
+    console.log("Embeddings Fulfilled.");
   } catch (e) {
     state.error = e;
     console.log(e);
@@ -201,9 +180,7 @@ app.get("/docs", (_req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log("listening on http://localhost:3000/");
-  console.log("visit the new page at http://localhost:3000/home");
-  console.log("visit the docs page at http://localhost:3000/docs");
+  console.log("Visit chatPDF on http://localhost:3000/");
 });
 
 function saveState() {
