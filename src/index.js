@@ -8,7 +8,7 @@ import { fileURLToPath, parse } from "url";
 import { util } from "./util.js";
 const app = express();
 const server = http.createServer(app);
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "./uploads/" });
 const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
@@ -25,10 +25,12 @@ let state = {
 };
 fs.writeFileSync("state.json", JSON.stringify(state));
 
-path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(__dirname));
+console.log(__dirname);
 
 app.post("/query", async (req, res) => {
   if (state.vectorStore && req.body.query) {
@@ -44,7 +46,11 @@ app.post("/query", async (req, res) => {
       res.redirect("/home");
     } catch (e) {
       state.error = e;
-      const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
+      const errorMessage = util.makeMessage(
+        "chat-color",
+        "ChatPDF",
+        state.error,
+      );
       state.messages.push(errorMessage);
       console.log(e);
       res.render("home", state);
@@ -89,7 +95,11 @@ app.post("/setIndex", async (req, res) => {
       state.indices.unshift(state.index);
     } catch (e) {
       state.error = e;
-      const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
+      const errorMessage = util.makeMessage(
+        "chat-color",
+        "ChatPDF",
+        state.error,
+      );
       state.messages.push(errorMessage);
       console.log(e);
     }
