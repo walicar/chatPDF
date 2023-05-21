@@ -1,5 +1,4 @@
 import express from "express";
-import http from "http";
 import fs from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
@@ -7,7 +6,6 @@ import path from "path";
 import { fileURLToPath, parse } from "url";
 import { util } from "./util.js";
 const app = express();
-const server = http.createServer(app);
 const upload = multer({ dest: "./uploads/" });
 const statePath = "state.json";
 if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
@@ -185,7 +183,7 @@ app.get("/docs", (_req, res) => {
   res.render("docs", state);
 });
 
-server.listen(3000, () => {
+app.listen(3000, () => {
   console.log("Visit chatPDF on http://localhost:3000/");
 });
 
