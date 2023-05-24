@@ -48,7 +48,7 @@ app.post("/query", async (req, res) => {
     pushError("Error sending query");
   }
   saveState();
-  res.render("home", state);
+  res.redirect("/home");
 });
 
 app.post("/getIndices", async (req, res) => {
