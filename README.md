@@ -29,8 +29,8 @@ To talk with the document that you uploaded, go to the home page and select the 
 
 goal: locally hosted chat bot to interface with PDF
 
-- BLOCKED: Integrate ChromaDB into ChatPDF to replace Pinecone
-  - as of 5/14/23 Chroma cannot be run in-memory in JS
+- In Progress: Integrate ChromaDB into ChatPDF to replace Pinecone
+  - as of 5/14/23 Chroma cannot be run in-memory in JS, but can be run in a Docker container
 - BLOCKED: Integrate with GPT4All TS bindings
   - as of 5/22/23 official bindings haven't been made yet
 
