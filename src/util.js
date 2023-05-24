@@ -11,8 +11,6 @@ import { loadQAStuffChain } from "langchain/chains";
 // pinecone dimensions 1536
 
 export async function getTexts(path) {
-  console.log(path);
-  console.log(typeof path);
   const loader = new PDFLoader(path);
   const doc = await loader.load();
   const splitter = new RecursiveCharacterTextSplitter({
