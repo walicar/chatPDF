@@ -40,25 +40,15 @@ app.post("/query", async (req, res) => {
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
-      res.redirect("/home");
     } catch (e) {
-      state.error = e;
-      const errorMessage = util.makeMessage(
-        "chat-color",
-        "ChatPDF",
-        state.error,
-      );
-      state.messages.push(errorMessage);
+      pushError(e);
       console.log(e);
-      res.render("home", state);
     }
   } else {
-    state.error = "Error sending query";
-    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
-    state.messages.push(errorMessage);
-    res.redirect("/home");
+    pushError("Error sending query");
   }
   saveState();
+  res.render("home", state);
 });
 
 app.post("/getIndices", async (req, res) => {
@@ -67,9 +57,7 @@ app.post("/getIndices", async (req, res) => {
     const res = await util.getIndices();
     state.indices = state.indices.concat(res);
   } catch (e) {
-    state.error = e;
-    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
-    state.messages.push(errorMessage);
+    pushError(e);
     console.log(e);
   }
   saveState();
@@ -91,13 +79,7 @@ app.post("/setIndex", async (req, res) => {
       state.indices.splice(state.indices.indexOf(state.index), 1);
       state.indices.unshift(state.index);
     } catch (e) {
-      state.error = e;
-      const errorMessage = util.makeMessage(
-        "chat-color",
-        "ChatPDF",
-        state.error,
-      );
-      state.messages.push(errorMessage);
+      pushError(e);
       console.log(e);
     }
   }
@@ -137,10 +119,8 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
       });
     });
   } catch (e) {
+    pushError("Could not upload PDF");
     console.log(e);
-    state.error = "Could not upload PDF";
-    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
-    state.messages.push(errorMessage);
   }
   // create the index with the name
   const docname = req.body.docname;
@@ -148,10 +128,8 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     await util.createIndex(docname);
     // await mockPromisePass();
   } catch (e) {
-    state.error = e;
+    pushError(e);
     console.log(e);
-    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
-    state.messages.push(errorMessage);
   }
   // create embeddings
   await new Promise((resolve) => setTimeout(resolve, 75000));
@@ -160,10 +138,8 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     // await mockPromisePass();
     console.log("Embeddings Fulfilled.");
   } catch (e) {
-    state.error = e;
+    pushError(e);
     console.log(e);
-    const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
-    state.messages.push(errorMessage);
   }
   saveState();
   res.redirect("/docs");
@@ -189,4 +165,14 @@ app.listen(3000, () => {
 
 function saveState() {
   fs.writeFileSync("state.json", JSON.stringify(state));
+}
+
+function pushError(e, string = undefined) {
+  state.error = e;
+  const errorMessage = util.makeMessage(
+    "chat-color",
+    "ChatPDF",
+    state.error,
+  );
+  state.messages.push(errorMessage);
 }
