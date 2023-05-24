@@ -132,7 +132,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     console.log(e);
   }
   // create embeddings
-  await new Promise((resolve) => setTimeout(resolve, 75000));
+  await new Promise((resolve) => setTimeout(resolve, 180000));
   try {
     state.vectorStore = await util.createEmbeddings(textstore, docname);
     // await mockPromisePass();
