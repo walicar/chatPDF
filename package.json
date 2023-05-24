@@ -21,6 +21,7 @@
     "pdfjs-dist": "^3.4.120"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
   }
 }
