@@ -24,7 +24,7 @@ goal: locally hosted chat bot to interface with PDF
 - BLOCKED: Integrate ChromaDB into ChatPDF to replace Pinecone
 	- as of 5/14/23 Chroma cannot be run in-memory in JS
 - BLOCKED: Integrate with GPT4All TS bindings
-  - as of 5/22/23 official bindings haven't been mad yet
+  - as of 5/22/23 official bindings haven't been made yet
 
 ## Disclaimer
 This is a test project not meant to be used in production.
