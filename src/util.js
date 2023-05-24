@@ -39,7 +39,7 @@ export async function createEmbeddings(texts, indexName) {
       texts,
       metadatas,
       embeddings,
-      dbConfig,
+      dbConfig
     );
     return vectorStore;
   } catch (e) {
@@ -93,7 +93,7 @@ export async function getStore(indexName) {
   const dbConfig = { pineconeIndex: index };
   const pineconeStore = await PineconeStore.fromExistingIndex(
     embeddings,
-    dbConfig,
+    dbConfig
   );
   return pineconeStore;
 }

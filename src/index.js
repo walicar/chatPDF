@@ -15,11 +15,13 @@ let state = {
   index: undefined,
   indices: ["none"],
   vectorStore: undefined,
-  messages: [{
-    color: "chat-color",
-    name: "ChatPDF",
-    content: "Welcome to chatPDF, select a document and ask me a question!",
-  }],
+  messages: [
+    {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: "Welcome to chatPDF, select a document and ask me a question!",
+    },
+  ],
 };
 fs.writeFileSync("state.json", JSON.stringify(state));
 
@@ -169,10 +171,6 @@ function saveState() {
 
 function pushError(e, string = undefined) {
   state.error = e;
-  const errorMessage = util.makeMessage(
-    "chat-color",
-    "ChatPDF",
-    state.error,
-  );
+  const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
 }
