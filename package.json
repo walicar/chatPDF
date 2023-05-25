@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "npx nodemon",
-    "test": "npx jest"
+    "test": "npx tsc && npx jest"
   },
   "keywords": [],
   "author": "",
