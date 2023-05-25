@@ -1,4 +1,4 @@
-import util from "../src/util";
+import util from "../src/lib/util";
 // all tests are run in root dir
 
 /*

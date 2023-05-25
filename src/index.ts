@@ -4,7 +4,7 @@ import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath, parse } from "url";
-import util from "./util";
+import util from "./lib/util";
 import { stateType } from "./lib/stateType";
 
 const app = express();
