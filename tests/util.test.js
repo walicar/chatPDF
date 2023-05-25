@@ -1,4 +1,4 @@
-import { util } from "../src/util.js";
+import { util } from "../src/lib/util.js";
 // all tests are run in root dir
 
 /*

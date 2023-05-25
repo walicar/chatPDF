@@ -4,7 +4,7 @@ import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath, parse } from "url";
-import { util } from "./util.js";
+import { util } from "./lib/util.js";
 const app = express();
 const upload = multer({ dest: "./uploads/" });
 const statePath = "state.json";
