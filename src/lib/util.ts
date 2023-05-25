@@ -13,12 +13,10 @@ import { loadQAStuffChain } from "langchain/chains";
 export async function getTexts(path: string) {
   const loader = new PDFLoader(path);
   const doc = await loader.load();
-  console.log("HELLO!!")
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
     chunkOverlap: 20,
   });
-  console.log("MADE IT HERE")
   const docs = await splitter.splitDocuments(doc);
   return docs.map((d) => d.pageContent);
 }
