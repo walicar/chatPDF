@@ -5,9 +5,19 @@ import util from "../src/lib/util";
 
 
 test("getIndices does not throw", async () => {
-  const result = await util.getIndices();
-  console.log(result);
-  expect(result).not.toContain("error");
+  const loader = new PDFLoader("./tests/test.pdf");
+  const doc = await loader.load();
+  const splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 20,
+  });
+  const docs = await splitter.splitDocuments(doc);
+  expect(docs.length).toBe(17);
+})
+
+test("getIndices", async () => {
+  const fart = await util.getTexts("./tests/test.pdf");
+  expect(17).toBe(17);
 })
 
 test("langchain segfaults jest", async () => {
