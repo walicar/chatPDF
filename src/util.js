@@ -1,11 +1,11 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { PDFLoader } from "langchain/document_loaders";
-import { PineconeStore } from "langchain/vectorstores";
+import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { PineconeClient } from "@pinecone-database/pinecone";
-import { OpenAIEmbeddings } from "langchain/embeddings";
-import { OpenAI } from "langchain";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
 
 // pinecone dimensions 1536
