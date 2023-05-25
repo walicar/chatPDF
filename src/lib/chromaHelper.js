@@ -21,12 +21,22 @@ export class ChromaHelper {
 
   async createCollection(name) {
     const client = new ChromaClient();
-    await client.createCollection({ name });
+    try {
+      const res = await client.createCollection({ name });
+      return res;
+    } catch (e) {
+      return e;
+    }
   }
 
   async deleteCollection(name) {
     const client = new ChromaClient();
-    await client.deleteCollection({ name });
+    try {
+      const res = await client.deleteCollection({ name });
+      return res;
+    } catch (e) {
+      return e;
+    }
   }
 
 

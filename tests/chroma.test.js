@@ -1,4 +1,8 @@
 import { ChromaHelper } from "../src/lib/chromaHelper";
-test("getTexts does not fail", async () => {
-  expect(17).toBe(17);
+import { expect } from "@jest/globals";
+test("create collection", async () => { 
+  const helper = new ChromaHelper();
+  const create = await helper.createCollection("test");
+  await helper.deleteCollection("test");
+  expect(create).not.toContain("Error");
 });
