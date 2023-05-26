@@ -7,20 +7,19 @@ import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
 export class ChromaHelper {
   constructor() {
-    this.currentStore = undefined;
+    this.client = new ChromaClient();
   }
 
   async createEmbeddings(texts, name) {
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
-    const client = new ChromaClient();
     const metadatas = [{}];
     try {
       const embedder = new OpenAIEmbeddingFunction({
         openai_api_key: process.env.OPENAI_API_KEY,
       });
-      await client.createCollection({ name, embeddingFunction: embedder });
+      await this.client.createCollection({ name, embeddingFunction: embedder });
       const store = await Chroma.fromTexts(texts, metadatas, embeddings, {
         collectionName: name,
       });
@@ -32,9 +31,8 @@ export class ChromaHelper {
   }
 
   async deleteCollection(name) {
-    const client = new ChromaClient();
     try {
-      const res = await client.deleteCollection({ name });
+      const res = await this.client.deleteCollection({ name });
       return res;
     } catch (e) {
       return e;
@@ -56,6 +54,15 @@ export class ChromaHelper {
       return answer.text;
     } else {
       return Error("Store does not exist");
+    }
+  }
+
+  async getcollections() {
+    try {
+      const res = await this.client.listCollections()
+      return res;
+    } catch (e) {
+      return e;
     }
   }
 }
