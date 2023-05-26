@@ -41,17 +41,21 @@ export class ChromaHelper {
 
   async queryDoc(query) {
     if (this.store) {
-      const docs = await this.store.similaritySearch(query, 1);
-      const llm = new OpenAI({
-        openAIApiKey: process.env.OPENAI_API_KEY,
-        temperature: 0.3,
-      });
-      const chain = loadQAStuffChain(llm);
-      const answer = await chain.call({
-        input_documents: docs,
-        question: query,
-      });
-      return answer.text;
+      try {
+        const docs = await this.store.similaritySearch(query, 1);
+        const llm = new OpenAI({
+          openAIApiKey: process.env.OPENAI_API_KEY,
+          temperature: 0.3,
+        });
+        const chain = loadQAStuffChain(llm);
+        const answer = await chain.call({
+          input_documents: docs,
+          question: query,
+        });
+        return answer.text;
+      } catch (e) {
+        return e;
+      }
     } else {
       return Error("Store does not exist");
     }
