@@ -9,17 +9,6 @@ export class ChromaHelper {
   constructor() {
     this.currentStore = undefined;
   }
-  async createEmbeddingsV2(texts, name) {
-    const client = new ChromaClient();
-    const embedder = new OpenAIEmbeddingFunction({
-      openai_api_key: process.env.OPENAI_API_KEY,
-    });
-    const collection = await client.createCollection({
-      name,
-      embeddingFunction: embedder,
-    });
-    this.currentStore = collection;
-  }
 
   async createEmbeddings(docs, name) {
     const embeddings = new OpenAIEmbeddings({
