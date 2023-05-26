@@ -4,6 +4,7 @@
   font-size: 18px;
   --border-theme: 2.5px solid black;
   font-family: "Source Sans Pro", sans-serif;
+  --shadow-theme: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 textarea {
@@ -29,6 +30,9 @@ input[type="file"]::file-selector-button {
   padding: 6px;
   border: none;
   font-size: 15px;
+  cursor: pointer;
+  margin-left: 7px;
+  margin-bottom: 15px;
 }
 
 textarea {
@@ -43,7 +47,7 @@ select {
   background-color: rgba(51, 51, 51, 0.09);
   border-radius: 8px;
   padding: 6px;
-  border: none;
+  border: none rgba(55,55,55, 0.5);
   cursor: pointer;
 }
 
@@ -59,6 +63,7 @@ select {
   grid-template-rows: 46px 1fr 110px;
   border: var(--border-theme);
   border-radius: 21px;
+  box-shadow: var(--shadow-theme);
 }
 
 #top-bar {
@@ -109,6 +114,7 @@ select {
 #query-input {
   flex-grow: 4;
   resize: none;
+  padding: 10px;
 }
 
 .user-color {
