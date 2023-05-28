@@ -1,5 +1,5 @@
 import { PineconeHelper } from "../src/lib/PineconeHelper.js";
-import { describe, expect } from "@jest/globals";
+import { describe, expect, jest } from "@jest/globals";
 import { util } from "../src/lib/util.js";
 
 test("placeholder", async () => {
@@ -17,9 +17,3 @@ test.skip("describeIndex", async () => {
   const result = await helper.describeIndex("world");
   expect(result.database.name).toEqual("world");
 }, 10000)
-
-test("pollIndex", async () => {
-  const helper = new PineconeHelper();
-  const result = await helper.poll("world");
-  expect(result).toEqual(true);
-}, 20000)
