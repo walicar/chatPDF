@@ -5,12 +5,14 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ChromaClient, OpenAIEmbeddingFunction } from "chromadb";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
-export class ChromaHelper {
+import { Helper } from "./helper"
+export class ChromaHelper extends Helper {
   constructor() {
+    super();
     this.client = new ChromaClient();
   }
 
-  async createEmbeddings(texts, name) {
+  async createDocument(texts, name) {
     const embeddings = new OpenAIEmbeddings({
       openAIApiKey: process.env.OPENAI_API_KEY,
     });
@@ -30,7 +32,7 @@ export class ChromaHelper {
     }
   }
 
-  async deleteCollection(name) {
+  async deleteDocument(name) {
     try {
       const res = await this.client.deleteCollection({ name });
       return res;
@@ -39,7 +41,7 @@ export class ChromaHelper {
     }
   }
 
-  async queryDoc(query) {
+  async queryDocument(query) {
     if (this.store) {
       try {
         const docs = await this.store.similaritySearch(query, 1);
@@ -61,10 +63,18 @@ export class ChromaHelper {
     }
   }
 
-  async getcollections() {
+  async getDocuments() {
     try {
       const res = await this.client.listCollections()
       return res;
+    } catch (e) {
+      return e;
+    }
+  }
+
+  async useDocument(name) {
+    try {
+      this.store = await this.client.getCollection({ name })
     } catch (e) {
       return e;
     }
