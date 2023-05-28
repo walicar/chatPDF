@@ -1,4 +1,4 @@
-import { PineconeHelper } from "../src/lib/PineconeHelper.js";
+import { PineconeHelper } from "../src/lib/pineconeHelper.js";
 import { describe, expect, jest } from "@jest/globals";
 import { util } from "../src/lib/util.js";
 
@@ -17,3 +17,10 @@ test.skip("describeIndex", async () => {
   const result = await helper.describeIndex("world");
   expect(result.database.name).toEqual("world");
 }, 10000)
+
+test("describeIndex that doesn't exist", async () => {
+  const helper = new PineconeHelper();
+  const desc = await helper.describeIndex("NOTEXIST");
+  console.log(desc.message);;
+  expect(desc.messag).toContain("Error");
+})
