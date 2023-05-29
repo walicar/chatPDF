@@ -5,13 +5,12 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
+import { Helper } from "./helper";
 
 // pinecone dimensions 1536
 
-export class PineconeHelper {
-  constructor() {
-    this.store;
-  }
+export class PineconeHelper extends Helper {
+  constructor() { super(); }
 
   async init() {
     const client = new PineconeClient();
@@ -24,6 +23,25 @@ export class PineconeHelper {
       throw e;
     }
     return client;
+  }
+
+  async createDocument(texts, name) {
+    try {
+      const desc = await this.describeIndex(name);
+      if (desc instanceof Error) {
+        await this.createIndex(name);
+        let ready = false;
+        while (!ready) {
+          ready = await this.poll(name);
+        }
+        await this.createEmbeddings(texts, name);
+      } else {
+        const store = await this.useDocument(name);
+        return store;
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 
   async createEmbeddings(texts, name) {
@@ -41,12 +59,13 @@ export class PineconeHelper {
         dbConfig
       );
       this.store = store;
+      return store;
     } catch (e) {
       console.log(e);
     }
   }
 
-  async queryDoc(query) {
+  async queryDocument(query) {
     try {
       const docs = await this.store.similaritySearch(query);
       const llm = new OpenAI({
@@ -61,10 +80,10 @@ export class PineconeHelper {
     }
   }
 
-  async createIndex() {
+  async createIndex(name) {
     const client = await this.init();
     const createRequest = {
-      name: indexName,
+      name,
       dimension: 1536,
       metric: "cosine",
       podType: "p1",
@@ -76,7 +95,7 @@ export class PineconeHelper {
     }
   }
 
-  async getIndices() {
+  async getDocuments() {
     const client = await this.init();
     try {
       const list = await client.listIndexes();
@@ -86,17 +105,18 @@ export class PineconeHelper {
     }
   }
 
-  async getIndex(name) {
+  async useDocument(name) {
     const fields = { openaiapikey: process.env.openai_api_key };
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
     const index = client.Index(name);
     const dbconfig = { pineconeIndex: index };
     try {
-      const store = await PineconeStore.fromexistingindex(
+      const store = await PineconeStore.fromExistingIndex(
         embeddings,
         dbconfig
       );
+      this.store = store;
       return store;
     } catch (e) {
       return e;
@@ -113,18 +133,21 @@ export class PineconeHelper {
     }
   }
 
-  async deleteIndex(name) {
+  async deleteDocument(name) {
     const client = await this.init();
-    await client.deleteIndex(name);
+    try {
+      await client.deleteIndex(name);
+    } catch (e) {
+      return error;
+    }
   }
 
   async poll(name) {
-    // not tested
-    const interval = 5000
+    const time = 5000
     let desc;
     let flag = false;
     const client = await this.init();
-    setInterval(async () => {
+    const interval = setInterval(async () => {
       try {
         desc = await client.describeIndex({ indexName: name });
       } catch (e) {
@@ -132,9 +155,9 @@ export class PineconeHelper {
       }
       if (desc.status.ready) {
         flag = true;
-        clearInterval(this);
+        clearInterval(interval);
       }
-    }, interval)
+    }, time)
     return flag;
   }
 }

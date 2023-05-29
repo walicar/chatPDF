@@ -24,3 +24,11 @@ test("describeIndex that doesn't exist", async () => {
   console.log(desc.message);;
   expect(desc.messag).toContain("Error");
 })
+
+test.skip("createDocument", async () => {
+  // will need to be mocked to be tested
+  const name = "varia";
+  const helper = new PineconeHelper();
+  const texts = await util.getTexts("./tests/test.pdf");
+  const store = await helper.createDocument(texts, name);
+})
