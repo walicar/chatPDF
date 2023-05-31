@@ -11,8 +11,6 @@ import { ChromaHelper } from "./lib/chromaHelper.js";
 
 const app = express();
 const upload = multer({ dest: "./uploads/" });
-const statePath = "state.json";
-if (fsSync.existsSync(statePath)) fsSync.unlinkSync(statePath);
 let state = {
   service: {
     name: 'pinecone', // do not overwrite this, must be saved
@@ -32,7 +30,6 @@ let state = {
   ],
 };
 loadService();
-fsSync.writeFileSync("state.json", JSON.stringify(state));
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set("views", path.join(__dirname, "views"));
@@ -58,7 +55,6 @@ app.post("/query", async (req, res) => {
   } else {
     pushError("Error sending query");
   }
-  saveState();
   res.redirect("/home");
 });
 
@@ -71,7 +67,6 @@ app.post("/getIndices", async (req, res) => {
     pushError(e);
     console.log(e);
   }
-  saveState();
   res.redirect(redirectURL);
 });
 
@@ -94,7 +89,6 @@ app.post("/setIndex", async (req, res) => {
       console.log(e);
     }
   }
-  saveState();
   res.redirect(redirectURL);
 });
 
@@ -105,7 +99,6 @@ app.post("/deleteStore", async (req, res) => {
   }
   state.indices.splice(state.indices.indexOf(req.body.index), 1);
   await util.deleteIndex(req.body.index);
-  saveState();
   res.redirect("/docs");
 });
 
@@ -122,7 +115,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     pushError(e);
     console.log(e);
   }
-  saveState();
   res.redirect("/docs")
 })
 
@@ -145,17 +137,12 @@ app.get("/home", (_req, res) => {
 
 app.get("/docs", (_req, res) => {
   state.error = undefined;
-  saveState();
   res.render("docs", state);
 });
 
 app.listen(3000, () => {
   console.log("Visit chatPDF on http://localhost:3000/");
 });
-
-function saveState() {
-  fsSync.writeFileSync("state.json", JSON.stringify(state));
-}
 
 function pushError(e, string = undefined) {
   state.error = e;
