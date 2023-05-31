@@ -1,6 +1,6 @@
 import express from "express";
 import fs from "fs/promises";
-import fsSync from "fs";
+import fsSync, { existsSync } from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
@@ -14,6 +14,10 @@ const upload = multer({ dest: "./uploads/" });
 const statePath = "state.json";
 if (fsSync.existsSync(statePath)) fsSync.unlinkSync(statePath);
 let state = {
+  service: {
+    name: 'pinecone', // do not overwrite this, must be saved
+    helper: undefined, // must be omitted when state is written to file
+  },
   error: undefined,
   response: undefined,
   index: undefined,
@@ -27,6 +31,7 @@ let state = {
     },
   ],
 };
+loadService();
 fsSync.writeFileSync("state.json", JSON.stringify(state));
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -121,6 +126,14 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   res.redirect("/docs")
 })
 
+app.post("/selectService", (req, res) => {
+  if (req.body.service != state.service) {
+    state.service = req.body.service;
+    saveService();
+    state.helper = getService(req.body.service);
+  }
+  res.redirect("/home");
+})
 
 app.get("/", (_req, res) => {
   res.redirect("/home");
@@ -168,11 +181,23 @@ const services = {
   chroma: () => new ChromaHelper()
 }
 
-function getService(service) {
-  const factory = services[service];
+function getService(name) {
+  const factory = services[name];
   if (factory) {
     return factory();
   } else {
     return null;
+  }
+}
+
+function saveService() {
+  fsSync.writeFileSync("servicename", state.service.name);
+}
+
+function loadService() {
+  if (fsSync.existsSync("servicename")) {
+    state.service.name = fsSync.readFileSync("servicename");
+  } else {
+    saveService();
   }
 }
