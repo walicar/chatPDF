@@ -14,7 +14,6 @@ export class PineconeHelper extends Helper {
 
   async init() {
     const client = new PineconeClient();
-    console.log('initializing')
     try {
       await client.init({
         apiKey: process.env.PINECONE_API_KEY,
@@ -27,22 +26,14 @@ export class PineconeHelper extends Helper {
   }
 
   async createDocument(texts, name) {
-    console.log("HELLI")
-    console.log(texts);
     try {
       const desc = await this.describeIndex(name);
       if (desc instanceof Error) {
-        console.log("trying to create Index");
         await this.createIndex(name);
-        console.log("created Index");
-        console.log("going to poll");
         const result = await this.poll(name);
         if (result) {
-          console.log("trying to create embeddings");
           await this.createEmbeddings(texts, name);
-          console.log("embeddings created")
         } else {
-          console.log("index wasn't ready")
         }
       } else {
         const store = await this.useDocument(name);
@@ -54,9 +45,7 @@ export class PineconeHelper extends Helper {
   }
 
   async createEmbeddings(texts, indexName) {
-    console.log("entered embeddings, gonna have to wait");
-    await new Promise(r => setTimeout(r, 15000));
-    console.log("stop waiting")
+    await new Promise(r => setTimeout(r, 3000));
     const fields = { openAIApiKey: process.env.OPENAI_API_KEY };
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
@@ -156,7 +145,6 @@ export class PineconeHelper extends Helper {
   }
 
   async poll(name) {
-    console.log("Starting poll");
     const time = 15000
     const limit = 20;
     const client = await this.init();
@@ -164,7 +152,6 @@ export class PineconeHelper extends Helper {
     while (tries < limit) {
       try {
         let desc = await client.describeIndex({ indexName: name });
-        console.log("POLL STATUS: " + desc.status.ready);
         if (desc.status.ready) {
           return true;
         }

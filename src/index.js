@@ -7,7 +7,6 @@ import path from "path";
 import { fileURLToPath, parse } from "url";
 import { util } from "./lib/util.js";
 import { PineconeHelper } from "./lib/pineconeHelper.js";
-import async from "async";
 
 const app = express();
 const upload = multer({ dest: "./uploads/" });
@@ -106,7 +105,6 @@ app.post("/deleteStore", async (req, res) => {
 
 app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
-  console.log("trying to get texts")
   // get texts
   try {
     const text = await getTexts(file)
@@ -200,7 +198,6 @@ function pushError(e, string = undefined) {
 }
 
 async function getTexts(file) {
-  console.log("entered to get texts");
   try {
     const data = await fs.readFile(file.path);
     await fs.writeFile(`uploads/${file.originalname}`, data);
