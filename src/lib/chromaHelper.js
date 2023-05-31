@@ -5,7 +5,7 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ChromaClient, OpenAIEmbeddingFunction } from "chromadb";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
-import { Helper } from "./helper"
+import { Helper } from "./helper.js"
 export class ChromaHelper extends Helper {
   constructor() {
     super();
