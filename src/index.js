@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath, parse } from "url";
 import { util } from "./lib/util.js";
 import { PineconeHelper } from "./lib/pineconeHelper.js";
+import { ChromaHelper } from "./lib/chromaHelper.js";
 
 const app = express();
 const upload = multer({ dest: "./uploads/" });
@@ -159,5 +160,19 @@ async function getTexts(file) {
   } catch (err) {
     pushError("Could not upload PDF");
     console.log(err);
+  }
+}
+
+const services = {
+  pinecone: () => new PineconeHelper(),
+  chroma: () => new ChromaHelper()
+}
+
+function getService(service) {
+  const factory = services[service];
+  if (factory) {
+    return factory();
+  } else {
+    return null;
   }
 }
