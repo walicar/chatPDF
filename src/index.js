@@ -120,54 +120,6 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   res.redirect("/docs")
 })
 
-/*
-app.post("/createStore", upload.single("doc"), async (req, res) => {
-  const file = req.file;
-  let textstore = "";
-  // get texts
-  try {
-    fs.readFile(file.path, async (err, data) => {
-      if (err) throw err;
-      fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
-        if (err) throw err;
-        console.log(`File uploaded: ${file.originalname}`);
-        fs.unlink(file.path, async (err) => {
-          if (err) throw err;
-          try {
-            textstore = await util.getTexts(`./uploads/${file.originalname}`);
-          } catch (e) {
-            console.log(e);
-          }
-        });
-      });
-    });
-  } catch (e) {
-    pushError("Could not upload PDF");
-    console.log(e);
-  }
-  // create the index with the name
-  const docname = req.body.docname;
-  try {
-    await util.createIndex(docname);
-    // await mockPromisePass();
-  } catch (e) {
-    pushError(e);
-    console.log(e);
-  }
-  // create embeddings
-  await new Promise((resolve) => setTimeout(resolve, 180000));
-  try {
-    state.vectorStore = await util.createEmbeddings(textstore, docname);
-    // await mockPromisePass();
-    console.log("Embeddings Fulfilled.");
-  } catch (e) {
-    pushError(e);
-    console.log(e);
-  }
-  saveState();
-  res.redirect("/docs");
-});
-*/
 
 app.get("/", (_req, res) => {
   res.redirect("/home");
