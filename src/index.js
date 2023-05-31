@@ -1,14 +1,18 @@
 import express from "express";
-import fs from "fs";
+import fs from "fs/promises";
+import fsSync from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath, parse } from "url";
 import { util } from "./lib/util.js";
+import { PineconeHelper } from "./lib/pineconeHelper.js";
+import async from "async";
+
 const app = express();
 const upload = multer({ dest: "./uploads/" });
 const statePath = "state.json";
-if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
+if (fsSync.existsSync(statePath)) fsSync.unlinkSync(statePath);
 let state = {
   error: undefined,
   response: undefined,
@@ -23,7 +27,7 @@ let state = {
     },
   ],
 };
-fs.writeFileSync("state.json", JSON.stringify(state));
+fsSync.writeFileSync("state.json", JSON.stringify(state));
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set("views", path.join(__dirname, "views"));
@@ -102,50 +106,21 @@ app.post("/deleteStore", async (req, res) => {
 
 app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
-  let textstore = "";
+  console.log("trying to get texts")
   // get texts
   try {
-    fs.readFile(file.path, async (err, data) => {
-      if (err) throw err;
-      fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
-        if (err) throw err;
-        console.log(`File uploaded: ${file.originalname}`);
-        fs.unlink(file.path, async (err) => {
-          if (err) throw err;
-          try {
-            textstore = await util.getTexts(`./uploads/${file.originalname}`);
-          } catch (e) {
-            console.log(e);
-          }
-        });
-      });
-    });
-  } catch (e) {
-    pushError("Could not upload PDF");
-    console.log(e);
-  }
-  // create the index with the name
-  const docname = req.body.docname;
-  try {
-    await util.createIndex(docname);
-    // await mockPromisePass();
-  } catch (e) {
-    pushError(e);
-    console.log(e);
-  }
-  // create embeddings
-  await new Promise((resolve) => setTimeout(resolve, 180000));
-  try {
-    state.vectorStore = await util.createEmbeddings(textstore, docname);
-    // await mockPromisePass();
-    console.log("Embeddings Fulfilled.");
+    const text = await getTexts(file)
+    const helper = new PineconeHelper();
+    const docname = req.body.docname;
+    const store = await helper.createDocument(text, docname);
+    state.vectorStore = store;
   } catch (e) {
     pushError(e);
     console.log(e);
   }
   saveState();
-  res.redirect("/docs");
-});
+  res.redirect("/docs")
+})
 
 app.get("/", (_req, res) => {
   res.redirect("/home");
@@ -166,11 +141,25 @@ app.listen(3000, () => {
 });
 
 function saveState() {
-  fs.writeFileSync("state.json", JSON.stringify(state));
+  fsSync.writeFileSync("state.json", JSON.stringify(state));
 }
 
 function pushError(e, string = undefined) {
   state.error = e;
   const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
+}
+
+async function getTexts(file) {
+  console.log("entered to get texts");
+  try {
+    const data = await fs.readFile(file.path);
+    await fs.writeFile(`uploads/${file.originalname}`, data);
+    console.log(`File uploaded: ${file.originalname}`);
+    await fs.unlink(file.path);
+    return await util.getTexts(`./uploads/${file.originalname}`);
+  } catch (err) {
+    pushError("Could not upload PDF");
+    console.log(err);
+  }
 }

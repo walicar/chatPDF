@@ -5,7 +5,7 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
-import { Helper } from "./helper";
+import { Helper } from "./helper.js";
 
 // pinecone dimensions 1536
 
@@ -14,6 +14,7 @@ export class PineconeHelper extends Helper {
 
   async init() {
     const client = new PineconeClient();
+    console.log('initializing')
     try {
       await client.init({
         apiKey: process.env.PINECONE_API_KEY,
@@ -26,15 +27,23 @@ export class PineconeHelper extends Helper {
   }
 
   async createDocument(texts, name) {
+    console.log("HELLI")
+    console.log(texts);
     try {
       const desc = await this.describeIndex(name);
       if (desc instanceof Error) {
+        console.log("trying to create Index");
         await this.createIndex(name);
-        let ready = false;
-        while (!ready) {
-          ready = await this.poll(name);
+        console.log("created Index");
+        console.log("going to poll");
+        const result = await this.poll(name);
+        if (result) {
+          console.log("trying to create embeddings");
+          await this.createEmbeddings(texts, name);
+          console.log("embeddings created")
+        } else {
+          console.log("index wasn't ready")
         }
-        await this.createEmbeddings(texts, name);
       } else {
         const store = await this.useDocument(name);
         return store;
@@ -44,11 +53,15 @@ export class PineconeHelper extends Helper {
     }
   }
 
-  async createEmbeddings(texts, name) {
+  async createEmbeddings(texts, indexName) {
+    console.log("entered embeddings, gonna have to wait");
+    await new Promise(r => setTimeout(r, 15000));
+    console.log("stop waiting")
     const fields = { openAIApiKey: process.env.OPENAI_API_KEY };
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
-    const index = client.Index(name);
+    const index = client.Index(indexName);
+    console.log(index);
     const metadatas = [{}];
     const dbConfig = { pineconeIndex: index };
     try {
@@ -143,21 +156,24 @@ export class PineconeHelper extends Helper {
   }
 
   async poll(name) {
-    const time = 5000
-    let desc;
-    let flag = false;
+    console.log("Starting poll");
+    const time = 15000
+    const limit = 20;
     const client = await this.init();
-    const interval = setInterval(async () => {
+    let tries = 0;
+    while (tries < limit) {
       try {
-        desc = await client.describeIndex({ indexName: name });
+        let desc = await client.describeIndex({ indexName: name });
+        console.log("POLL STATUS: " + desc.status.ready);
+        if (desc.status.ready) {
+          return true;
+        }
       } catch (e) {
         return e;
       }
-      if (desc.status.ready) {
-        flag = true;
-        clearInterval(interval);
-      }
-    }, time)
-    return flag;
+      tries++;
+      await new Promise(r => setTimeout(r, time));
+    }
+    return false;
   }
 }
