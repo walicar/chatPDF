@@ -1,4 +1,4 @@
-import { ChromaHelper } from "../src/lib/ChromaHelper";
+import { ChromaHelper } from "../src/lib/chromaHelper";
 import { expect } from "@jest/globals";
 import { util } from "../src/lib/util.js";
 
