@@ -23,8 +23,8 @@ let state = {
     helper: undefined,
   },
   error: undefined,
-  index: undefined,
-  indices: ["none"],
+  document: undefined,
+  documents: ["none"],
   vectorStore: undefined,
   messages: [
     {
@@ -66,7 +66,7 @@ app.post("/getIndices", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
     const res = await util.getIndices();
-    state.indices = state.indices.concat(res);
+    state.documents = state.documents.concat(res);
   } catch (e) {
     pushError(e);
     console.log(e);
@@ -74,18 +74,17 @@ app.post("/getIndices", async (req, res) => {
   res.redirect(redirectURL);
 });
 
-app.post("/setIndex", async (req, res) => {
+app.post("/setDocument", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
-  if (req.body.index == "none") {
-    state.index = req.body.index;
+  if (req.body.document == "none") {
+    state.document = req.body.document;
     state.vectorStore = undefined;
-    updateList(state.indices, state.index);
+    updateList(state.documents, state.document);
   } else {
     try {
-      state.index = req.body.index;
-      state.vectorStore = await util.getStore(state.index);
-      // then change how the indices are listed
-      updateList(state.indices, state.index);
+      state.document = req.body.document;
+      state.vectorStore = await util.getStore(state.document);
+      updateList(state.documents, state.document);
     } catch (e) {
       pushError(e);
       console.log(e);
@@ -95,12 +94,12 @@ app.post("/setIndex", async (req, res) => {
 });
 
 app.post("/deleteStore", async (req, res) => {
-  if (state.index == req.body.index) {
-    state.index = undefined;
+  if (state.document == req.body.document) {
+    state.document = undefined;
     state.vectorStore = undefined;
   }
-  state.indices.splice(state.indices.indexOf(req.body.index), 1);
-  await util.deleteIndex(req.body.index);
+  state.documents.splice(state.indices.indexOf(req.body.document), 1);
+  await util.deleteIndex(req.body.document);
   res.redirect("/docs");
 });
 
@@ -126,7 +125,7 @@ app.post("/selectService", (req, res) => {
   updateList(state.service.names, state.service.name);
   saveService();
   state.helper = getService(req.body.service);
-  state.indices = ["none"];
+  state.documents = ["none"];
   state.messages = [
     {
       color: "chat-color",
