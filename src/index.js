@@ -1,6 +1,5 @@
 import express from "express";
-import fs from "fs/promises";
-import fsSync, { existsSync } from "fs";
+import fs from "fs";
 import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
@@ -169,12 +168,12 @@ function getService(name) {
 }
 
 function saveService() {
-  fsSync.writeFileSync("servicename", state.service.name);
+  fs.writeFileSync("servicename", state.service.name);
 }
 
 function loadService() {
-  if (fsSync.existsSync("servicename")) {
-    state.service.name = fsSync.readFileSync("servicename", "utf-8");
+  if (fs.existsSync("servicename")) {
+    state.service.name = fs.readFileSync("servicename", "utf-8");
     state.service.helper = getService(state.service.name);
   } else {
     saveService();
