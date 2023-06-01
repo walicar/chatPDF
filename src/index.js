@@ -129,7 +129,14 @@ app.post("/selectService", (req, res) => {
   saveService();
   state.helper = getService(req.body.service);
   state.indices = ["none"];
-  res.redirect("/home");
+  state.messages = [
+    {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: "Welcome to chatPDF, select a document and ask me a question!",
+    },
+  ]
+    res.redirect("/home");
 })
 
 app.get("/", (_req, res) => {
