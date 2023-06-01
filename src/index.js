@@ -23,7 +23,6 @@ let state = {
     helper: undefined,
   },
   error: undefined,
-  response: undefined,
   index: undefined,
   indices: ["none"],
   vectorStore: undefined,
@@ -50,7 +49,6 @@ app.post("/query", async (req, res) => {
     state.messages.push(queryMessage);
     try {
       const response = await util.queryDoc(req.body.query, state.vectorStore);
-      state.response = response;
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
@@ -136,7 +134,7 @@ app.post("/selectService", (req, res) => {
       content: "Welcome to chatPDF, select a document and ask me a question!",
     },
   ]
-    res.redirect("/home");
+  res.redirect("/home");
 })
 
 app.get("/", (_req, res) => {
