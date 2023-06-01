@@ -107,7 +107,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
   // get texts
   try {
-    const text = await getTexts(file)
+    const text = await util.getTexts(file)
     const helper = new PineconeHelper();
     const docname = req.body.docname;
     const store = await helper.createDocument(text, docname);
@@ -157,19 +157,6 @@ function pushError(e, string = undefined) {
   state.error = e;
   const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
-}
-
-async function getTexts(file) {
-  try {
-    const data = await fs.readFile(file.path);
-    await fs.writeFile(`uploads/${file.originalname}`, data);
-    console.log(`File uploaded: ${file.originalname}`);
-    await fs.unlink(file.path);
-    return await util.processTexts(`./uploads/${file.originalname}`);
-  } catch (err) {
-    pushError("Could not upload PDF");
-    console.log(err);
-  }
 }
 
 function getService(name) {

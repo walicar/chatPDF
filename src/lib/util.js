@@ -7,6 +7,7 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
+import fs from "fs/promises";
 
 // pinecone dimensions 1536
 
@@ -19,6 +20,19 @@ export async function processTexts(path) {
   });
   const docs = await splitter.splitDocuments(doc);
   return docs.map((d) => d.pageContent);
+}
+
+async function getTexts(file) {
+  try {
+    const data = await fs.readFile(file.path);
+    await fs.writeFile(`uploads/${file.originalname}`, data);
+    console.log(`File uploaded: ${file.originalname}`);
+    await fs.unlink(file.path);
+    return await util.processTexts(`./uploads/${file.originalname}`);
+  } catch (err) {
+    pushError("Could not upload PDF");
+    console.log(err);
+  }
 }
 
 export async function createEmbeddings(texts, indexName) {
@@ -173,6 +187,7 @@ export function makeMessage(color, name, content) {
 
 const util = {
   queryDoc,
+  getTexts,
   processTexts,
   getStore,
   getIndices,
