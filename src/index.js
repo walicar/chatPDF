@@ -9,12 +9,18 @@ import { util } from "./lib/util.js";
 import { PineconeHelper } from "./lib/pineconeHelper.js";
 import { ChromaHelper } from "./lib/chromaHelper.js";
 
+const services = {
+  pinecone: () => new PineconeHelper(),
+  chroma: () => new ChromaHelper()
+}
+
 const app = express();
 const upload = multer({ dest: "./uploads/" });
 let state = {
   service: {
-    name: 'pinecone', // do not overwrite this, must be saved
-    helper: undefined, // must be omitted when state is written to file
+    name: 'pinecone',
+    names: ['pinecone', 'chroma'],
+    helper: undefined,
   },
   error: undefined,
   response: undefined,
@@ -75,15 +81,13 @@ app.post("/setIndex", async (req, res) => {
   if (req.body.index == "none") {
     state.index = req.body.index;
     state.vectorStore = undefined;
-    state.indices.splice(state.indices.indexOf(state.index), 1);
-    state.indices.unshift(state.index);
+    updateList(state.indices, state.index);
   } else {
     try {
       state.index = req.body.index;
       state.vectorStore = await util.getStore(state.index);
       // then change how the indices are listed
-      state.indices.splice(state.indices.indexOf(state.index), 1);
-      state.indices.unshift(state.index);
+      updateList(state.indices, state.index);
     } catch (e) {
       pushError(e);
       console.log(e);
@@ -119,11 +123,12 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
 })
 
 app.post("/selectService", (req, res) => {
-  if (req.body.service != state.service) {
-    state.service = req.body.service;
-    saveService();
-    state.helper = getService(req.body.service);
-  }
+  console.log(req.body.servicename + " instate: " + state.service.name)
+  state.service.name = req.body.servicename;
+  updateList(state.service.names, state.service.name);
+  saveService();
+  state.helper = getService(req.body.service);
+  state.indices = ["none"];
   res.redirect("/home");
 })
 
@@ -163,11 +168,6 @@ async function getTexts(file) {
   }
 }
 
-const services = {
-  pinecone: () => new PineconeHelper(),
-  chroma: () => new ChromaHelper()
-}
-
 function getService(name) {
   const factory = services[name];
   if (factory) {
@@ -183,8 +183,14 @@ function saveService() {
 
 function loadService() {
   if (fsSync.existsSync("servicename")) {
-    state.service.name = fsSync.readFileSync("servicename");
+    state.service.name = fsSync.readFileSync("servicename", "utf-8");
+    state.service.helper = getService(state.service.name);
   } else {
     saveService();
   }
+}
+
+function updateList(list, item) {
+  list.splice(list.indexOf(item), 1);
+  list.unshift(item);
 }

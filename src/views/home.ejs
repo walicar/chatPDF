@@ -22,6 +22,16 @@
   <main class="container main-page">
     <div id="top-bar">
       <div class="logo">chatPDF</div>
+      <form class="top-bar-item" action="/selectService" method="POST">
+        <label for="servicename">Service: </label>
+        <select onchange="this.form.submit()" name="servicename">
+          <% service.names.forEach((item) => { %>
+              <option value="<%= item %>">
+                <%= item %>
+              </option>
+          <% }) %>
+        </select>
+      </form>
       <% if (indices && indices.length> 1) { %>
         <form class="top-bar-item" action="/setIndex" method="POST">
           <label for="index">Index: </label>
