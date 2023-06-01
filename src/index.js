@@ -10,15 +10,15 @@ import { ChromaHelper } from "./lib/chromaHelper.js";
 
 const services = {
   pinecone: () => new PineconeHelper(),
-  chroma: () => new ChromaHelper()
-}
+  chroma: () => new ChromaHelper(),
+};
 
 const app = express();
 const upload = multer({ dest: "./uploads/" });
 let state = {
   service: {
-    name: 'pinecone',
-    names: ['pinecone', 'chroma'],
+    name: "pinecone",
+    names: ["pinecone", "chroma"],
     helper: undefined,
   },
   error: undefined,
@@ -106,7 +106,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
   // get texts
   try {
-    const text = await util.getTexts(file)
+    const text = await util.getTexts(file);
     const helper = new PineconeHelper();
     const docname = req.body.docname;
     const store = await helper.createDocument(text, docname);
@@ -115,11 +115,11 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
     pushError(e);
     console.log(e);
   }
-  res.redirect("/docs")
-})
+  res.redirect("/docs");
+});
 
 app.post("/selectService", (req, res) => {
-  console.log(req.body.servicename + " instate: " + state.service.name)
+  console.log(req.body.servicename + " instate: " + state.service.name);
   state.service.name = req.body.servicename;
   updateList(state.service.names, state.service.name);
   saveService();
@@ -131,9 +131,9 @@ app.post("/selectService", (req, res) => {
       name: "ChatPDF",
       content: "Welcome to chatPDF, select a document and ask me a question!",
     },
-  ]
+  ];
   res.redirect("/home");
-})
+});
 
 app.get("/", (_req, res) => {
   res.redirect("/home");

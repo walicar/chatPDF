@@ -5,7 +5,7 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ChromaClient, OpenAIEmbeddingFunction } from "chromadb";
 import { OpenAI } from "langchain/llms/openai";
 import { loadQAStuffChain } from "langchain/chains";
-import { Helper } from "./helper.js"
+import { Helper } from "./helper.js";
 export class ChromaHelper extends Helper {
   constructor() {
     super();
@@ -65,7 +65,7 @@ export class ChromaHelper extends Helper {
 
   async getDocuments() {
     try {
-      const res = await this.client.listCollections()
+      const res = await this.client.listCollections();
       return res;
     } catch (e) {
       return e;
@@ -74,7 +74,7 @@ export class ChromaHelper extends Helper {
 
   async useDocument(name) {
     try {
-      this.store = await this.client.getCollection({ name })
+      this.store = await this.client.getCollection({ name });
     } catch (e) {
       return e;
     }

@@ -10,7 +10,9 @@ import { Helper } from "./helper.js";
 // pinecone dimensions 1536
 
 export class PineconeHelper extends Helper {
-  constructor() { super(); }
+  constructor() {
+    super();
+  }
 
   async init() {
     const client = new PineconeClient();
@@ -45,7 +47,7 @@ export class PineconeHelper extends Helper {
   }
 
   async createEmbeddings(texts, indexName) {
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
     const fields = { openAIApiKey: process.env.OPENAI_API_KEY };
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
@@ -75,7 +77,10 @@ export class PineconeHelper extends Helper {
         temperature: 0.5,
       });
       const chain = loadQAStuffChain(llm);
-      const answer = await chain.call({ input_documents: docs, question: query });
+      const answer = await chain.call({
+        input_documents: docs,
+        question: query,
+      });
       return answer.text;
     } catch (e) {
       console.log(e);
@@ -114,10 +119,7 @@ export class PineconeHelper extends Helper {
     const index = client.Index(name);
     const dbconfig = { pineconeIndex: index };
     try {
-      const store = await PineconeStore.fromExistingIndex(
-        embeddings,
-        dbconfig
-      );
+      const store = await PineconeStore.fromExistingIndex(embeddings, dbconfig);
       this.store = store;
       return store;
     } catch (e) {
@@ -145,7 +147,7 @@ export class PineconeHelper extends Helper {
   }
 
   async poll(name) {
-    const time = 15000
+    const time = 15000;
     const limit = 20;
     const client = await this.init();
     let tries = 0;
@@ -159,7 +161,7 @@ export class PineconeHelper extends Helper {
         return e;
       }
       tries++;
-      await new Promise(r => setTimeout(r, time));
+      await new Promise((r) => setTimeout(r, time));
     }
     return false;
   }
