@@ -28,7 +28,7 @@ async function getTexts(file) {
     await fs.writeFile(`uploads/${file.originalname}`, data);
     console.log(`File uploaded: ${file.originalname}`);
     await fs.unlink(file.path);
-    return await util.processTexts(`./uploads/${file.originalname}`);
+    return await processTexts(`./uploads/${file.originalname}`);
   } catch (err) {
     pushError("Could not upload PDF");
     console.log(err);
