@@ -97,7 +97,7 @@ app.post("/deleteStore", async (req, res) => {
     state.service.helper.store = undefined;
   }
   state.documents.splice(state.indices.indexOf(req.body.document), 1);
-  await util.deleteIndex(req.body.document);
+  await state.service.helper.deleteDocument(req.body.document);
   res.redirect("/docs");
 });
 
