@@ -24,7 +24,6 @@ let state = {
   error: undefined,
   document: undefined,
   documents: ["none"],
-  vectorStore: undefined,
   messages: [
     {
       color: "chat-color",
@@ -42,12 +41,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 app.post("/query", async (req, res) => {
-  if (state.vectorStore && req.body.query) {
+  if (state.service.helper.store && req.body.query) {
     const content = req.body.query;
     const queryMessage = util.makeMessage("user-color", "User", content);
     state.messages.push(queryMessage);
     try {
-      const response = await util.queryDoc(req.body.query, state.vectorStore);
+      const response = await state.service.helper.queryDocument(req.body.query);
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
@@ -64,7 +63,7 @@ app.post("/query", async (req, res) => {
 app.post("/getIndices", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
-    const res = await util.getIndices();
+    const res = await state.service.helper.getDocuments();
     state.documents = state.documents.concat(res);
   } catch (e) {
     pushError(e);
@@ -77,12 +76,12 @@ app.post("/setDocument", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   if (req.body.document == "none") {
     state.document = req.body.document;
-    state.vectorStore = undefined;
+    state.service.helper.store = undefined;
     updateList(state.documents, state.document);
   } else {
     try {
       state.document = req.body.document;
-      state.vectorStore = await util.getStore(state.document);
+      await state.service.helper.useDocument(state.document);
       updateList(state.documents, state.document);
     } catch (e) {
       pushError(e);
@@ -95,7 +94,7 @@ app.post("/setDocument", async (req, res) => {
 app.post("/deleteStore", async (req, res) => {
   if (state.document == req.body.document) {
     state.document = undefined;
-    state.vectorStore = undefined;
+    state.service.helper.store = undefined;
   }
   state.documents.splice(state.indices.indexOf(req.body.document), 1);
   await util.deleteIndex(req.body.document);
@@ -104,13 +103,10 @@ app.post("/deleteStore", async (req, res) => {
 
 app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
-  // get texts
   try {
     const text = await util.getTexts(file);
-    const helper = new PineconeHelper();
     const docname = req.body.docname;
-    const store = await helper.createDocument(text, docname);
-    state.vectorStore = store;
+    await state.service.helper.createDocument(text, docname);
   } catch (e) {
     pushError(e);
     console.log(e);
@@ -123,7 +119,7 @@ app.post("/selectService", (req, res) => {
   state.service.name = req.body.servicename;
   updateList(state.service.names, state.service.name);
   saveService();
-  state.helper = getService(req.body.service);
+  state.helper = getService(req.body.servicename);
   state.documents = ["none"];
   state.messages = [
     {
@@ -176,6 +172,8 @@ function loadService() {
     state.service.name = fs.readFileSync("servicename", "utf-8");
     state.service.helper = getService(state.service.name);
   } else {
+    state.service.name = "pinecone";
+    state.service.helper = getService("pinecone");
     saveService();
   }
 }
