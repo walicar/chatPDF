@@ -64,7 +64,7 @@ app.post("/getDocuments", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
     const res = await state.service.helper.getDocuments();
-    state.documents = state.documents.concat(res);
+    state.documents = util.merge(state.documents, res);
   } catch (e) {
     pushError(e);
     console.log(e);

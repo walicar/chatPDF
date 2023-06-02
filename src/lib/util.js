@@ -36,6 +36,13 @@ export function makeMessage(color, name, content) {
   return message;
 }
 
+export function merge(a, b) {
+  // merge a and b with no dupes
+  const map = new Map();
+  let res = a.concat(b.filter(item => a.indexOf(item) < 0));
+  return res;
+}
+
 export async function mockPromisePass() {
   const promise = new Promise((resolve, _reject) => {
     setTimeout(() => {
@@ -58,6 +65,7 @@ const util = {
   getTexts,
   processTexts,
   makeMessage,
+  merge,
   mockPromisePass,
   mockPromiseFail,
 };

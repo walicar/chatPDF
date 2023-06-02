@@ -45,6 +45,9 @@
             </select>
             <button type="submit">Delete</button>
           </form>
+          <form style="padding-left: 0px;"action="/getDocuments" method="POST">
+            <button type="submit"><i class="bi bi-arrow-clockwise"></i></button>
+          </form>
           <% } else { %>
             <form action="/getDocuments" method="POST">
               <button type="submit">Get Documents</button>

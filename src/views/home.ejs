@@ -4,6 +4,7 @@
 <head>
   <title>chatPDF</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
   <script async>
     function showQuery() {
       var newPar = document.createElement('p');
@@ -25,11 +26,11 @@
       <form class="top-bar-item" action="/setService" method="POST">
         <label for="servicename">Service: </label>
         <select onchange="this.form.submit()" name="servicename">
-          <% service.names.forEach((item) => { %>
-              <option value="<%= item %>">
-                <%= item %>
-              </option>
-          <% }) %>
+          <% service.names.forEach((item)=> { %>
+            <option value="<%= item %>">
+              <%= item %>
+            </option>
+            <% }) %>
         </select>
       </form>
       <% if (documents && documents.length> 1) { %>
@@ -42,6 +43,9 @@
               </option>
               <% }) %>
           </select>
+        </form>
+        <form class="top-bar-item" style="padding-left: 0px;"action="/getDocuments" method="POST">
+          <button type="submit"><i class="bi bi-arrow-clockwise"></i></button>
         </form>
         <% } else { %>
           <form class="top-bar-item" action="/getDocuments" method="POST">
