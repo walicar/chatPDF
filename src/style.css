@@ -4,7 +4,8 @@
   font-size: 18px;
   --border-theme: 2.5px solid black;
   font-family: "Source Sans Pro", sans-serif;
-  --shadow-theme: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  --shadow-theme: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 textarea {
@@ -47,7 +48,7 @@ select {
   background-color: rgba(51, 51, 51, 0.09);
   border-radius: 8px;
   padding: 6px;
-  border: none rgba(55,55,55, 0.5);
+  border: none rgba(55, 55, 55, 0.5);
   cursor: pointer;
 }
 
