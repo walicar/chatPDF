@@ -140,7 +140,7 @@ export class PineconeHelper extends Helper {
   async deleteDocument(name) {
     const client = await this.init();
     try {
-      await client.deleteIndex(name);
+      await client.deleteIndex({ indexName: name });
     } catch (e) {
       return error;
     }
