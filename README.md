@@ -2,6 +2,8 @@
 
 Chat with a PDF through a Web UI using OpenAI, Pinecone, Chroma, and LangChain
 
+![docs/chatPDF.png](docs/chatPDF.png)
+
 ## Requirements
 
 - OpenAI account
