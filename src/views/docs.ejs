@@ -4,6 +4,7 @@
 <head>
   <title>chatPDF</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
   </head>
 
 <body>
@@ -34,7 +35,7 @@
       <div>
         <h2>Delete Index</h2>
         <% if (documents && documents.length> 1) { %>
-          <form action="/deleteDocument" method="POST">
+          <form style="display:inline;" action="/deleteDocument" method="POST">
             <label for="document">Document: </label>
             <select name="document">
               <% documents.forEach((item)=> { %>
@@ -45,7 +46,7 @@
             </select>
             <button type="submit">Delete</button>
           </form>
-          <form style="padding-left: 0px;"action="/getDocuments" method="POST">
+          <form style="display:inline; padding-left:5px;"action="/getDocuments" method="POST">
             <button type="submit"><i class="bi bi-arrow-clockwise"></i></button>
           </form>
           <% } else { %>
