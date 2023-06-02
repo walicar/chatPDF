@@ -4,17 +4,26 @@ import multer from "multer";
 import bodyParser from "body-parser";
 import path from "path";
 import { fileURLToPath, parse } from "url";
-import { util } from "./util.js";
+import { util } from "./lib/util.js";
+import { PineconeHelper } from "./lib/pineconeHelper.js";
+import { ChromaHelper } from "./lib/chromaHelper.js";
+
+const services = {
+  pinecone: () => new PineconeHelper(),
+  chroma: () => new ChromaHelper(),
+};
+
 const app = express();
 const upload = multer({ dest: "./uploads/" });
-const statePath = "state.json";
-if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 let state = {
+  service: {
+    name: "pinecone",
+    names: ["pinecone", "chroma"],
+    helper: undefined,
+  },
   error: undefined,
-  response: undefined,
-  index: undefined,
-  indices: ["none"],
-  vectorStore: undefined,
+  document: undefined,
+  documents: ["none"],
   messages: [
     {
       color: "chat-color",
@@ -23,7 +32,7 @@ let state = {
     },
   ],
 };
-fs.writeFileSync("state.json", JSON.stringify(state));
+loadService();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.set("views", path.join(__dirname, "views"));
@@ -32,13 +41,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 app.post("/query", async (req, res) => {
-  if (state.vectorStore && req.body.query) {
+  if (state.service.helper.store && req.body.query) {
     const content = req.body.query;
     const queryMessage = util.makeMessage("user-color", "User", content);
     state.messages.push(queryMessage);
     try {
-      const response = await util.queryDoc(req.body.query, state.vectorStore);
-      state.response = response;
+      const response = await state.service.helper.queryDocument(req.body.query);
       const answerMessage = util.makeMessage("chat-color", "ChatPDF", response);
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
@@ -49,102 +57,77 @@ app.post("/query", async (req, res) => {
   } else {
     pushError("Error sending query");
   }
-  saveState();
   res.redirect("/home");
 });
 
 app.post("/getIndices", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
-    const res = await util.getIndices();
-    state.indices = state.indices.concat(res);
+    const res = await state.service.helper.getDocuments();
+    state.documents = state.documents.concat(res);
   } catch (e) {
     pushError(e);
     console.log(e);
   }
-  saveState();
   res.redirect(redirectURL);
 });
 
-app.post("/setIndex", async (req, res) => {
+app.post("/setDocument", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
-  if (req.body.index == "none") {
-    state.index = req.body.index;
-    state.vectorStore = undefined;
-    state.indices.splice(state.indices.indexOf(state.index), 1);
-    state.indices.unshift(state.index);
+  if (req.body.document == "none") {
+    state.document = req.body.document;
+    state.service.helper.store = undefined;
+    updateList(state.documents, state.document);
   } else {
     try {
-      state.index = req.body.index;
-      state.vectorStore = await util.getStore(state.index);
-      // then change how the indices are listed
-      state.indices.splice(state.indices.indexOf(state.index), 1);
-      state.indices.unshift(state.index);
+      state.document = req.body.document;
+      await state.service.helper.useDocument(state.document);
+      updateList(state.documents, state.document);
     } catch (e) {
       pushError(e);
       console.log(e);
     }
   }
-  saveState();
   res.redirect(redirectURL);
 });
 
 app.post("/deleteStore", async (req, res) => {
-  if (state.index == req.body.index) {
-    state.index = undefined;
-    state.vectorStore = undefined;
+  if (state.document == req.body.document) {
+    state.document = undefined;
+    state.service.helper.store = undefined;
   }
-  state.indices.splice(state.indices.indexOf(req.body.index), 1);
-  await util.deleteIndex(req.body.index);
-  saveState();
+  state.documents.splice(state.indices.indexOf(req.body.document), 1);
+  await state.service.helper.deleteDocument(req.body.document);
   res.redirect("/docs");
 });
 
 app.post("/createStore", upload.single("doc"), async (req, res) => {
   const file = req.file;
-  let textstore = "";
-  // get texts
   try {
-    fs.readFile(file.path, async (err, data) => {
-      if (err) throw err;
-      fs.writeFile(`uploads/${file.originalname}`, data, async (err) => {
-        if (err) throw err;
-        console.log(`File uploaded: ${file.originalname}`);
-        fs.unlink(file.path, async (err) => {
-          if (err) throw err;
-          try {
-            textstore = await util.getTexts(`./uploads/${file.originalname}`);
-          } catch (e) {
-            console.log(e);
-          }
-        });
-      });
-    });
-  } catch (e) {
-    pushError("Could not upload PDF");
-    console.log(e);
-  }
-  // create the index with the name
-  const docname = req.body.docname;
-  try {
-    await util.createIndex(docname);
-    // await mockPromisePass();
+    const text = await util.getTexts(file);
+    const docname = req.body.docname;
+    await state.service.helper.createDocument(text, docname);
   } catch (e) {
     pushError(e);
     console.log(e);
   }
-  // create embeddings
-  await new Promise((resolve) => setTimeout(resolve, 180000));
-  try {
-    state.vectorStore = await util.createEmbeddings(textstore, docname);
-    // await mockPromisePass();
-    console.log("Embeddings Fulfilled.");
-  } catch (e) {
-    pushError(e);
-    console.log(e);
-  }
-  saveState();
   res.redirect("/docs");
+});
+
+app.post("/selectService", (req, res) => {
+  state.service.name = req.body.servicename;
+  updateList(state.service.names, state.service.name);
+  saveService();
+  state.service.helper = getService(state.service.name);
+  state.documents = ["none"];
+  state.messages = [
+    {
+      color: "chat-color",
+      name: "ChatPDF",
+      content: "Welcome to chatPDF, select a document and ask me a question!",
+    },
+  ];
+  res.redirect("/home");
 });
 
 app.get("/", (_req, res) => {
@@ -157,7 +140,6 @@ app.get("/home", (_req, res) => {
 
 app.get("/docs", (_req, res) => {
   state.error = undefined;
-  saveState();
   res.render("docs", state);
 });
 
@@ -165,12 +147,38 @@ app.listen(3000, () => {
   console.log("Visit chatPDF on http://localhost:3000/");
 });
 
-function saveState() {
-  fs.writeFileSync("state.json", JSON.stringify(state));
-}
-
 function pushError(e, string = undefined) {
   state.error = e;
   const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
+}
+
+function getService(name) {
+  const factory = services[name];
+  if (factory) {
+    return factory();
+  } else {
+    return null;
+  }
+}
+
+function saveService() {
+  fs.writeFileSync("servicename", state.service.name);
+}
+
+function loadService() {
+  if (fs.existsSync("servicename")) {
+    state.service.name = fs.readFileSync("servicename", "utf-8");
+    state.service.helper = getService(state.service.name);
+    updateList(state.service.names, state.service.name);
+  } else {
+    state.service.name = "pinecone";
+    state.service.helper = getService("pinecone");
+    saveService();
+  }
+}
+
+function updateList(list, item) {
+  list.splice(list.indexOf(item), 1);
+  list.unshift(item);
 }
