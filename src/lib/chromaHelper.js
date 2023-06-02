@@ -66,7 +66,7 @@ export class ChromaHelper extends Helper {
   async getDocuments() {
     try {
       const list = await this.client.listCollections();
-      const res = list.map(item => item.name);
+      const res = list.map((item) => item.name);
       console.log(res);
       return res;
     } catch (e) {
@@ -79,7 +79,9 @@ export class ChromaHelper extends Helper {
       const embeddings = new OpenAIEmbeddings({
         openAIApiKey: process.env.OPENAI_API_KEY,
       });
-      this.store = await Chroma.fromExistingCollection(embeddings, { collectionName: name });
+      this.store = await Chroma.fromExistingCollection(embeddings, {
+        collectionName: name,
+      });
     } catch (e) {
       return e;
     }
