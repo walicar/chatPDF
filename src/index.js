@@ -115,11 +115,10 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
 });
 
 app.post("/selectService", (req, res) => {
-  console.log(req.body.servicename + " instate: " + state.service.name);
   state.service.name = req.body.servicename;
   updateList(state.service.names, state.service.name);
   saveService();
-  state.helper = getService(req.body.servicename);
+  state.service.helper = getService(state.service.name);
   state.documents = ["none"];
   state.messages = [
     {
@@ -171,6 +170,7 @@ function loadService() {
   if (fs.existsSync("servicename")) {
     state.service.name = fs.readFileSync("servicename", "utf-8");
     state.service.helper = getService(state.service.name);
+    updateList(state.service.names, state.service.name);
   } else {
     state.service.name = "pinecone";
     state.service.helper = getService("pinecone");
