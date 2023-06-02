@@ -22,7 +22,7 @@
   <main class="container main-page">
     <div id="top-bar">
       <div class="logo">chatPDF</div>
-      <form class="top-bar-item" action="/selectService" method="POST">
+      <form class="top-bar-item" action="/setService" method="POST">
         <label for="servicename">Service: </label>
         <select onchange="this.form.submit()" name="servicename">
           <% service.names.forEach((item) => { %>
@@ -44,7 +44,7 @@
           </select>
         </form>
         <% } else { %>
-          <form class="top-bar-item" action="/getIndices" method="POST">
+          <form class="top-bar-item" action="/getDocuments" method="POST">
             <button class='button-2' type="submit">Get Documents</button>
           </form>
           <% } %>

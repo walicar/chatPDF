@@ -60,7 +60,7 @@ app.post("/query", async (req, res) => {
   res.redirect("/home");
 });
 
-app.post("/getIndices", async (req, res) => {
+app.post("/getDocuments", async (req, res) => {
   const redirectURL = parse(req.get("Referer")).pathname;
   try {
     const res = await state.service.helper.getDocuments();
@@ -91,7 +91,7 @@ app.post("/setDocument", async (req, res) => {
   res.redirect(redirectURL);
 });
 
-app.post("/deleteStore", async (req, res) => {
+app.post("/deleteDocument", async (req, res) => {
   if (state.document == req.body.document) {
     state.document = undefined;
     state.service.helper.store = undefined;
@@ -101,7 +101,7 @@ app.post("/deleteStore", async (req, res) => {
   res.redirect("/docs");
 });
 
-app.post("/createStore", upload.single("doc"), async (req, res) => {
+app.post("/createDocument", upload.single("doc"), async (req, res) => {
   const file = req.file;
   try {
     const text = await util.getTexts(file);
@@ -114,7 +114,7 @@ app.post("/createStore", upload.single("doc"), async (req, res) => {
   res.redirect("/docs");
 });
 
-app.post("/selectService", (req, res) => {
+app.post("/setService", (req, res) => {
   state.service.name = req.body.servicename;
   updateList(state.service.names, state.service.name);
   saveService();
