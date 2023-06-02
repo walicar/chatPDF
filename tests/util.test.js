@@ -8,6 +8,6 @@ test("getIndices does not throw", async () => {
 */
 
 test("getTexts does not fail", async () => {
-  const result = await util.getTexts("tests/test.pdf");
+  const result = await util.processTexts("tests/test.pdf");
   expect(result.length).toBe(7);
 });

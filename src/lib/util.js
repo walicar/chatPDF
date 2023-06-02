@@ -23,7 +23,6 @@ async function getTexts(file) {
     await fs.unlink(file.path);
     return await processTexts(`./uploads/${file.originalname}`);
   } catch (err) {
-    pushError("Could not upload PDF");
     console.log(err);
   }
 }
