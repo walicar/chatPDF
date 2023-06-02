@@ -35,11 +35,13 @@ export class PineconeHelper extends Helper {
         const result = await this.poll(name);
         if (result) {
           await this.createEmbeddings(texts, name);
+          console.log("Document uploaded!");
         } else {
+          console.log(e);
         }
       } else {
         const store = await this.useDocument(name);
-        return store;
+        this.store = store;
       }
     } catch (e) {
       throw e;
@@ -52,7 +54,6 @@ export class PineconeHelper extends Helper {
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
     const index = client.Index(indexName);
-    console.log(index);
     const metadatas = [{}];
     const dbConfig = { pineconeIndex: index };
     try {
@@ -161,6 +162,7 @@ export class PineconeHelper extends Helper {
         return e;
       }
       tries++;
+      console.log("Waiting...");
       await new Promise((r) => setTimeout(r, time));
     }
     return false;
