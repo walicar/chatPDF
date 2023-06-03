@@ -49,7 +49,7 @@ export class PineconeHelper extends Helper {
   }
 
   async createEmbeddings(texts, indexName) {
-    await new Promise((r) => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 5000));
     const fields = { openAIApiKey: process.env.OPENAI_API_KEY };
     const embeddings = new OpenAIEmbeddings(fields);
     const client = await this.init();
@@ -84,7 +84,7 @@ export class PineconeHelper extends Helper {
       });
       return answer.text;
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   }
 
@@ -109,7 +109,7 @@ export class PineconeHelper extends Helper {
       const list = await client.listIndexes();
       return list;
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -124,7 +124,7 @@ export class PineconeHelper extends Helper {
       this.store = store;
       return store;
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -143,7 +143,7 @@ export class PineconeHelper extends Helper {
     try {
       await client.deleteIndex({ indexName: name });
     } catch (e) {
-      return error;
+      throw e;
     }
   }
 
@@ -159,7 +159,7 @@ export class PineconeHelper extends Helper {
           return true;
         }
       } catch (e) {
-        return e;
+        throw e;
       }
       tries++;
       console.log("Waiting...");
