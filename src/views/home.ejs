@@ -4,8 +4,9 @@
 <head>
   <title>chatPDF</title>
   <link rel="stylesheet" type="text/css" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
-  <script async>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+  <script defer>
     function showQuery() {
       var newPar = document.createElement('p');
       var newSpan = document.createElement('span');
@@ -16,6 +17,15 @@
       newPar.insertBefore(newSpan, newPar.firstChild);
       document.getElementById("chat-box").append(newPar);
     }
+    function scrollDown() {
+      console.log("was called")
+      var item = document.getElementById('bottom');
+      console.log(item);
+      if (item) {
+        item.scrollIntoView();
+      }
+    }
+    document.addEventListener("DOMContentLoaded", scrollDown);
   </script>
 </head>
 
@@ -44,7 +54,7 @@
               <% }) %>
           </select>
         </form>
-        <form class="top-bar-item" style="padding-left: 0px;"action="/getDocuments" method="POST">
+        <form class="top-bar-item" style="padding-left: 0px;" action="/getDocuments" method="POST">
           <button type="submit"><i class="bi bi-arrow-clockwise"></i></button>
         </form>
         <% } else { %>
@@ -55,11 +65,17 @@
             <a class="top-bar-item" href="/docs"><button>Manage Documents</button></a>
     </div>
     <div id="chat-box">
-      <% messages.forEach((message)=> {%>
-        <p>
-          <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;<%= message.content %>
-        </p>
-        <% }) %>
+      <% messages.forEach((message, index)=> {%>
+        <% if (index === messages.length - 1) {%>
+          <p>
+            <span id="bottom" class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;<%= message.content %>
+          </p>
+        <%} else {%>
+          <p>
+            <span class="<%= message.color %>">[<%= message.name %>]</span>&nbsp;<%= message.content %>
+          </p>
+        <% } %>
+      <% }) %>
     </div>
     <div id="query-box">
       <form onsubmit="showQuery()" action="/query" method="POST">
