@@ -16,11 +16,10 @@
       newPar.textContent = "\u00A0" + document.getElementById('query-input').value;
       newPar.insertBefore(newSpan, newPar.firstChild);
       document.getElementById("chat-box").append(newPar);
+      newSpan.scrollIntoView();
     }
     function scrollDown() {
-      console.log("was called")
       var item = document.getElementById('bottom');
-      console.log(item);
       if (item) {
         item.scrollIntoView();
       }
