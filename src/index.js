@@ -62,19 +62,23 @@ app.post("/query", async (req, res) => {
 });
 
 app.post("/getDocuments", async (req, res) => {
-  const redirectURL = parse(req.get("Referer")).pathname;
+  const redirectURL = new URL(req.get("Referer")).pathname;
   try {
     const res = await state.service.helper.getDocuments();
     state.documents = util.merge(state.documents, res);
   } catch (e) {
-    pushError(e);
+    if (redirectURL == "/home") {
+      pushError(e);
+    } else {
+      state.error = e.message;
+    }
     console.log(e);
   }
   res.redirect(redirectURL);
 });
 
 app.post("/setDocument", async (req, res) => {
-  const redirectURL = parse(req.get("Referer")).pathname;
+  const redirectURL = new URL(req.get("Referer")).pathname;
   if (req.body.document == "none") {
     state.document = req.body.document;
     state.service.helper.store = undefined;
@@ -85,7 +89,11 @@ app.post("/setDocument", async (req, res) => {
       await state.service.helper.useDocument(state.document);
       updateList(state.documents, state.document);
     } catch (e) {
-      pushError(e);
+      if (redirectURL == "/home") {
+        pushError(e);
+      } else {
+        state.error = e.message;
+      }
       console.log(e);
     }
   }
