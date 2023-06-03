@@ -7,6 +7,7 @@ import { fileURLToPath, parse } from "url";
 import { util } from "./lib/util.js";
 import { PineconeHelper } from "./lib/pineconeHelper.js";
 import { ChromaHelper } from "./lib/chromaHelper.js";
+import { URL } from 'url';
 
 const services = {
   pinecone: () => new PineconeHelper(),
@@ -108,7 +109,7 @@ app.post("/createDocument", upload.single("doc"), async (req, res) => {
     const docname = req.body.docname;
     await state.service.helper.createDocument(text, docname);
   } catch (e) {
-    pushError(e);
+    state.error = e.message;
   }
   res.redirect("/docs");
 });
@@ -133,12 +134,13 @@ app.get("/", (_req, res) => {
   res.redirect("/home");
 });
 
-app.get("/home", (_req, res) => {
+app.get("/home", (req, res) => {
+  eraseError("/home", req.get("Referer"));
   res.render("home", state);
 });
 
-app.get("/docs", (_req, res) => {
-  state.error = undefined;
+app.get("/docs", (req, res) => {
+  eraseError("/docs", req.get("Referer"));
   res.render("docs", state);
 });
 
@@ -147,7 +149,6 @@ app.listen(3000, () => {
 });
 
 function pushError(e, string = undefined) {
-  state.error = e.message;
   const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
 }
@@ -180,4 +181,11 @@ function loadService() {
 function updateList(list, item) {
   list.splice(list.indexOf(item), 1);
   list.unshift(item);
+}
+
+function eraseError(curUrl, prevUrl) {
+  // erase error when we've come from a different path
+  if (prevUrl && new URL(prevUrl).pathname != curUrl) {
+    state.error = undefined;
+  }
 }
