@@ -52,11 +52,10 @@ app.post("/query", async (req, res) => {
       state.messages.push(answerMessage);
       console.log("Query Fulfilled");
     } catch (e) {
-      pushError(e);
-      console.log(e);
+      pushError(e.message);
     }
   } else {
-    pushError("Error sending query");
+    pushError("No document selected, or empty query");
   }
   res.redirect("/home");
 });
@@ -68,7 +67,7 @@ app.post("/getDocuments", async (req, res) => {
     state.documents = util.merge(state.documents, res);
   } catch (e) {
     if (redirectURL == "/home") {
-      pushError(e);
+      pushError(e.message);
     } else {
       state.error = e.message;
     }
@@ -90,7 +89,7 @@ app.post("/setDocument", async (req, res) => {
       updateList(state.documents, state.document);
     } catch (e) {
       if (redirectURL == "/home") {
-        pushError(e);
+        pushError(e.message);
       } else {
         state.error = e.message;
       }
@@ -156,8 +155,8 @@ app.listen(3000, () => {
   console.log("Visit chatPDF on http://localhost:3000/");
 });
 
-function pushError(e, string = undefined) {
-  const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
+function pushError(msg) {
+  const errorMessage = util.makeMessage("chat-color", "ChatPDF", msg);
   state.messages.push(errorMessage);
 }
 
