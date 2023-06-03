@@ -28,7 +28,7 @@ export class ChromaHelper extends Helper {
       this.store = store;
       return store;
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -37,7 +37,7 @@ export class ChromaHelper extends Helper {
       const res = await this.client.deleteCollection({ name });
       return res;
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -56,7 +56,7 @@ export class ChromaHelper extends Helper {
         });
         return answer.text;
       } catch (e) {
-        return e;
+        throw e;
       }
     } else {
       return Error("Store does not exist");
@@ -70,7 +70,7 @@ export class ChromaHelper extends Helper {
       console.log(res);
       return res;
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 
@@ -83,7 +83,7 @@ export class ChromaHelper extends Helper {
         collectionName: name,
       });
     } catch (e) {
-      return e;
+      throw e;
     }
   }
 }
