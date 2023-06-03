@@ -17,4 +17,4 @@ test("merge works correctly", () => {
   const b = ["banana", "apple"];
   const result = util.merge(a, b);
   expect(result).toEqual(["apple", "orange", "banana"]);
-})
+});

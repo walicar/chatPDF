@@ -39,7 +39,7 @@ export function makeMessage(color, name, content) {
 export function merge(a, b) {
   // merge a and b with no dupes
   const map = new Map();
-  let res = a.concat(b.filter(item => a.indexOf(item) < 0));
+  let res = a.concat(b.filter((item) => a.indexOf(item) < 0));
   return res;
 }
 
