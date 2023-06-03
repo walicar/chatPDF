@@ -7,13 +7,12 @@ Chat with a PDF through a Web UI using OpenAI, Pinecone, Chroma, and LangChain
 ## Requirements
 
 - OpenAI account
-- Pinecone account
-- or locally [run Chroma](https://docs.trychroma.com/api-reference#run-the-backend)
+- Pinecone account, or locally [run Chroma](https://docs.trychroma.com/api-reference#run-the-backend)
 
 ## Setup
 
 1. run `npm i`
-2. create .env file and add the following:
+2. create `.env` file and add the following:
 
 ```
 OPEN_API_KEY=<your_key>
@@ -23,7 +22,7 @@ PINECONE_API_ENV=<your_env>
 
 3. Run the server by calling `npm start`
 
-## Using the Website
+## Usage
 
 Upload a PDF by clicking the "Manage Documents" button.
 
@@ -37,7 +36,3 @@ GOAL: locally hosted chat bot to interface with PDF
 
 - BLOCKED: Integrate with GPT4All TS bindings
   - as of 5/22/23 official bindings haven't been made yet
-
-## Disclaimer
-
-This is a test project not meant to be used in production.
