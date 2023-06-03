@@ -37,7 +37,7 @@ export class PineconeHelper extends Helper {
           await this.createEmbeddings(texts, name);
           console.log("Document uploaded!");
         } else {
-          console.log(e);
+          throw new Error("Timed out uploading document");
         }
       } else {
         const store = await this.useDocument(name);
