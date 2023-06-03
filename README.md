@@ -7,7 +7,7 @@ Chat with a PDF through a Web UI using OpenAI, Pinecone, Chroma, and LangChain
 ## Requirements
 
 - OpenAI account
-- Pinecone account, or locally [run Chroma](https://docs.trychroma.com/api-reference#run-the-backend)
+- Pinecone account, or locally [run Chroma](https://docs.trychroma.com/api-reference#run-the-backend) a faster alternative.
 
 ## Setup
 
