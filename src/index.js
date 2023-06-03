@@ -109,7 +109,6 @@ app.post("/createDocument", upload.single("doc"), async (req, res) => {
     await state.service.helper.createDocument(text, docname);
   } catch (e) {
     pushError(e);
-    console.log(e);
   }
   res.redirect("/docs");
 });
@@ -148,7 +147,7 @@ app.listen(3000, () => {
 });
 
 function pushError(e, string = undefined) {
-  state.error = e;
+  state.error = e.message;
   const errorMessage = util.makeMessage("chat-color", "ChatPDF", state.error);
   state.messages.push(errorMessage);
 }

@@ -5,14 +5,18 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import fs from "fs/promises";
 
 export async function processTexts(path) {
-  const loader = new PDFLoader(path);
-  const doc = await loader.load();
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 20,
-  });
-  const docs = await splitter.splitDocuments(doc);
-  return docs.map((d) => d.pageContent);
+  try {
+    const loader = new PDFLoader(path);
+    const doc = await loader.load();
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 20,
+    });
+    const docs = await splitter.splitDocuments(doc);
+    return docs.map((d) => d.pageContent);
+  } catch (e) {
+    throw e;
+  }
 }
 
 async function getTexts(file) {
@@ -22,8 +26,8 @@ async function getTexts(file) {
     console.log(`File uploaded: ${file.originalname}`);
     await fs.unlink(file.path);
     return await processTexts(`./uploads/${file.originalname}`);
-  } catch (err) {
-    console.log(err);
+  } catch (e) {
+    throw e;
   }
 }
 
