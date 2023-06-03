@@ -22,7 +22,7 @@ let state = {
     names: ["pinecone", "chroma"],
     helper: undefined,
   },
-  error: undefined,
+  error: undefined, // used for routes that are not "/home"
   document: undefined,
   documents: ["none"],
   messages: [
