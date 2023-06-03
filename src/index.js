@@ -71,7 +71,6 @@ app.post("/getDocuments", async (req, res) => {
     } else {
       state.error = e.message;
     }
-    console.log(e);
   }
   res.redirect(redirectURL);
 });
@@ -93,7 +92,6 @@ app.post("/setDocument", async (req, res) => {
       } else {
         state.error = e.message;
       }
-      console.log(e);
     }
   }
   res.redirect(redirectURL);
