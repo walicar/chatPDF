@@ -47,6 +47,11 @@ export function merge(a, b) {
   return res;
 }
 
+export function updateList(list, item) {
+  list.splice(list.indexOf(item), 1);
+  list.unshift(item);
+}
+
 export async function mockPromisePass() {
   const promise = new Promise((resolve, _reject) => {
     setTimeout(() => {
@@ -70,6 +75,7 @@ const util = {
   processTexts,
   makeMessage,
   merge,
+  updateList,
   mockPromisePass,
   mockPromiseFail,
 };

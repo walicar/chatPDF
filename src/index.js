@@ -80,12 +80,12 @@ app.post("/setDocument", async (req, res) => {
   if (req.body.document == "none") {
     state.document = req.body.document;
     state.service.helper.store = undefined;
-    updateList(state.documents, state.document);
+    util.updateList(state.documents, state.document);
   } else {
     try {
       state.document = req.body.document;
       await state.service.helper.useDocument(state.document);
-      updateList(state.documents, state.document);
+      util.updateList(state.documents, state.document);
     } catch (e) {
       if (redirectURL == "/home") {
         pushError(e.message);
@@ -121,7 +121,7 @@ app.post("/createDocument", upload.single("doc"), async (req, res) => {
 
 app.post("/setService", (req, res) => {
   state.service.name = req.body.servicename;
-  updateList(state.service.names, state.service.name);
+  util.updateList(state.service.names, state.service.name);
   saveService();
   state.service.helper = getService(state.service.name);
   state.documents = ["none"];
@@ -175,17 +175,12 @@ function loadService() {
   if (fs.existsSync("servicename")) {
     state.service.name = fs.readFileSync("servicename", "utf-8");
     state.service.helper = getService(state.service.name);
-    updateList(state.service.names, state.service.name);
+    util.updateList(state.service.names, state.service.name);
   } else {
     state.service.name = "pinecone";
     state.service.helper = getService("pinecone");
     saveService();
   }
-}
-
-function updateList(list, item) {
-  list.splice(list.indexOf(item), 1);
-  list.unshift(item);
 }
 
 function eraseError(curUrl, prevUrl) {
