@@ -21,7 +21,6 @@ label {
 input[type="file"] {
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
   width: 325px;
 }
 
